@@ -3,7 +3,9 @@ import {Outlet} from 'react-router-dom';
 
 const AuthLayout: React.FC = () => {
     return (
-        <Outlet/>
+        <div style={{ height: '100%', alignContent: 'center' }}>
+            <Outlet/>
+        </div>
     );
 };
 

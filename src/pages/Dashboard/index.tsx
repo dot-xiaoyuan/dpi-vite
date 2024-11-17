@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Card, Col, Row, Space, Statistic} from "antd";
 import Traffic from "../../components/charts/traffic";
-import {getDashboard} from "../../services/apiService";
 import AppChart from "../../components/charts/app";
 import ProtocolChart from "../../components/charts/protocol";
 import {ApplicationChart, ApplicationLayerChart, TrafficChartData, TransportLayerChart,} from "../../types/dashboard";
+import {dashboard} from "../../services/authService.ts";
 
 const Dashboard: React.FC = () => {
     const [application, setApplication] = useState<ApplicationChart[]>([]);
@@ -18,9 +18,11 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         let isMounted = true;
 
-        getDashboard()
-            .then((result) => {
+        dashboard()
+            .then((res) => {
+                let result = res.data
                 if (isMounted && result) {
+                    console.log(result);
                     // 设置 Dashboard 数据
                     setApplication(result.charts.application || []);
                     setApplicationLayer(result.charts.application_layer || []);
@@ -31,8 +33,8 @@ const Dashboard: React.FC = () => {
                     setTotalTraffics(result.total.traffics || 0);
                 }
             })
-            .catch((error) => {
-                console.error("Error fetching dashboard data:", error);
+            .catch(() => {
+                // console.error("Error fetching dashboard data:", error);
             });
 
         return () => {

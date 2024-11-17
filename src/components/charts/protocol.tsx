@@ -18,21 +18,19 @@ const ProtocolChart: React.FC<AppProtocolProps> = ({ data, title }) => {
         colorField: "type",
         radius: 1,
         innerRadius: 0.6,
-        label: {
-            type: "inner",
-            offset: "-30%",
-            content: ({ percent }: { percent: number }) => `${(percent * 100).toFixed(2)}%`,
-            style: {
-                textAlign: "center",
+        annotations: [
+            {
+                type: 'text',
+                style: {
+                    text: title,
+                    x: '50%',
+                    y: '50%',
+                    textAlign: 'center',
+                    // fontSize: 15,
+                    fontStyle: 'bold',
+                },
             },
-        },
-        meta: {
-            value: { alias: title },
-        },
-        autoFit: true,
-        tooltip: {
-            showTitle: false,
-        },
+        ],
     };
 
     return <Pie {...config} />;

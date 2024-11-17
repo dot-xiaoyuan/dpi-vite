@@ -1,13 +1,13 @@
 import React from 'react';
-import { ProLayout } from '@ant-design/pro-components';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { Dropdown, Menu, Space } from 'antd';
-import {UserOutlined, LogoutOutlined, DashboardOutlined} from '@ant-design/icons';
-import { useAuth } from '../context/AuthContext';
+import {ProLayout} from '@ant-design/pro-components';
+import {Outlet, useNavigate} from 'react-router-dom';
+import {Dropdown, Menu, Space} from 'antd';
+import {BarChartOutlined, DashboardOutlined, LogoutOutlined} from '@ant-design/icons';
+import {useAuth} from '../context/AuthContext';
 
 const MainLayout: React.FC = () => {
     const navigate = useNavigate();
-    const { logout, user } = useAuth(); // 从 AuthContext 获取用户信息
+    const {logout, user} = useAuth(); // 从 AuthContext 获取用户信息
 
     const handleLogout = async () => {
         await logout(); // 处理登出逻辑
@@ -18,12 +18,7 @@ const MainLayout: React.FC = () => {
         {
             path: '/dashboard',
             name: 'Dashboard',
-            icon: <DashboardOutlined />,
-        },
-        {
-            path: '/settings',
-            name: 'Settings',
-            icon: <UserOutlined />,
+            icon: <DashboardOutlined/>,
         },
     ];
 
@@ -32,7 +27,7 @@ const MainLayout: React.FC = () => {
             items={[
                 {
                     key: 'logout',
-                    icon: <LogoutOutlined />,
+                    icon: <LogoutOutlined/>,
                     label: 'Logout',
                     onClick: handleLogout,
                 },
@@ -42,8 +37,9 @@ const MainLayout: React.FC = () => {
 
     return (
         <ProLayout
+            siderWidth={256}
             title="DPI Analyze"
-            logo={<UserOutlined />}
+            logo={<BarChartOutlined/>}
             route={{
                 path: '/',
                 routes: menuItems,
@@ -58,14 +54,13 @@ const MainLayout: React.FC = () => {
             rightContentRender={() => (
                 <Space>
                     <Dropdown overlay={userMenu}>
-                        <span style={{ cursor: 'pointer' }}>{user?.username || 'Guest'}</span>
+                        <span style={{cursor: 'pointer'}}>{user?.username || 'Guest'}</span>
                     </Dropdown>
                 </Space>
             )}
+            contentWidth="Fixed"
         >
-            {/*<div style={{ padding: 24 }}>*/}
-                <Outlet /> {/* 子路由内容渲染 */}
-            {/*</div>*/}
+            <Outlet/>
         </ProLayout>
     );
 };

@@ -1,13 +1,12 @@
 import React from 'react';
 import {LoginForm, ProConfigProvider, ProFormText} from '@ant-design/pro-components';
-import {message, theme} from 'antd';
+import {message} from 'antd';
 import {BarChartOutlined, LockOutlined, UserOutlined} from '@ant-design/icons';
 import './index.css';
 import {login} from "../../services/authService.ts";
 import {useNavigate} from "react-router-dom";
 
 const LoginPage: React.FC = () => {
-    const {token} = theme.useToken();
     const navigate = useNavigate();
     const handleLogin = async (values: { username: string; password: string }) => {
         try {
@@ -27,7 +26,7 @@ const LoginPage: React.FC = () => {
     };
     return (
         <ProConfigProvider hashed={false}>
-            <div style={{backgroundColor: token.colorBgContainer}}>
+            <div>
                 <LoginForm
                     logo={<BarChartOutlined style={{fontSize: '3rem'}}/>}
                     title="DPI-Analyze"

@@ -2,9 +2,10 @@ import axios from 'axios';
 import {message} from 'antd';
 import {removeToken} from '../utils/storage';
 
+export const baseURL = 'http://127.0.0.1:8088/api'
 // 创建 Axios 实例
 const apiClient = axios.create({
-    baseURL: 'http://127.0.0.1:8088/api', // 后端接口的基础路径
+    baseURL: baseURL, // 后端接口的基础路径
     timeout: 10000, // 超时时间
     withCredentials: true,
 });
@@ -27,7 +28,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => {
         // 返回成功的响应数据
-        return response;
+        return response.data;
     },
     (error) => {
         if (error.response) {

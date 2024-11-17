@@ -17,20 +17,22 @@ const TrafficChart: React.FC<TrafficProps> = ({ data }) => {
         data,
         xField: "date",
         yField: "value",
-        seriesField: "type",
-        yAxis: {
-            label: {
-                formatter: (v: number) => v.toLocaleString(), // 千分位格式化
+        colorField: 'type',
+        axis: {
+            y: {
+                labelFormatter: (v: any) => `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
             },
         },
-        lineStyle: ({ type }: { type: string }) => {
-            if (type === "register") {
-                return { lineDash: [4, 4] };
-            }
-            return { opacity: 0.5 };
+        scale: {color: {range: ['#30BF78', '#F4664A', '#FAAD14']}},
+        style: {
+            lineWidth: 2,
+            lineDash: (data: { type: string; }[]) => {
+                if (data[0].type === 'register') return [4, 4];
+            },
+            opacity: (data: { type: string; }[]) => {
+                if (data[0].type !== 'register') return 0.5;
+            },
         },
-        smooth: true, // 平滑曲线
-        autoFit: true,
     };
 
     return <Line {...config} />;
