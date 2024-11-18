@@ -2,7 +2,17 @@ import React from 'react';
 import {ProLayout} from '@ant-design/pro-components';
 import {Outlet, useNavigate} from 'react-router-dom';
 import {Dropdown, Menu, Space} from 'antd';
-import {BarChartOutlined, DashboardOutlined, LogoutOutlined} from '@ant-design/icons';
+import {
+    BarChartOutlined,
+    DashboardOutlined,
+    DeploymentUnitOutlined,
+    LogoutOutlined,
+    CrownFilled,
+    PaperClipOutlined,
+    SettingOutlined,
+    BarsOutlined,
+    PushpinOutlined
+} from '@ant-design/icons';
 import {useAuth} from '../context/AuthContext';
 
 const MainLayout: React.FC = () => {
@@ -17,9 +27,88 @@ const MainLayout: React.FC = () => {
     const menuItems = [
         {
             path: '/dashboard',
-            name: 'Dashboard',
+            name: '仪表盘',
             icon: <DashboardOutlined/>,
         },
+        {
+            path: '/terminal-identification',
+            name: '终端识别',
+            icon: <DeploymentUnitOutlined/>,
+            routes: [
+                {
+                    path: '/terminal/identification',
+                    name: '终端类型识别',
+                    icon: <PushpinOutlined />,
+                },
+                {
+                    path: '/terminal/useragent',
+                    name: 'UA特征识别',
+                    icon: <CrownFilled />,
+                },
+                {
+                    path: '/terminal/application',
+                    name: '应用识别',
+                    icon: <CrownFilled />,
+                },
+            ],
+        },
+        {
+            path: '/feature-determination',
+            name: '特征判定',
+            icon: <PaperClipOutlined />,
+            routes: [
+                {
+                    path: '/admin/sub-page1',
+                    name: '实时共享终端判定',
+                    icon: 'https://gw.alipayobjects.com/zos/antfincdn/upvrAjAPQX/Logo_Tech%252520UI.svg',
+                    component: './Welcome',
+                },
+                {
+                    path: '/admin/sub-page2',
+                    name: '疑似共享终端判定',
+                    icon: <CrownFilled />,
+                    component: './Welcome',
+                },
+            ],
+        },
+        {
+            path: '/policy-configuration',
+            name: '策略配置',
+            icon: <SettingOutlined />,
+            routes: [
+                {
+                    path: '/admin/sub-page1',
+                    name: '准入策略',
+                    icon: 'https://gw.alipayobjects.com/zos/antfincdn/upvrAjAPQX/Logo_Tech%252520UI.svg',
+                    component: './Welcome',
+                },
+                {
+                    path: '/admin/sub-page2',
+                    name: '控制策略',
+                    icon: <CrownFilled />,
+                    component: './Welcome',
+                },
+            ],
+        },
+        {
+            path: '/log-management',
+            name: '日志管理',
+            icon: <BarsOutlined />,
+            routes: [
+                {
+                    path: '/admin/sub-page1',
+                    name: '用户上下线日志',
+                    icon: 'https://gw.alipayobjects.com/zos/antfincdn/upvrAjAPQX/Logo_Tech%252520UI.svg',
+                    component: './Welcome',
+                },
+                {
+                    path: '/admin/sub-page2',
+                    name: '控制策略',
+                    icon: <CrownFilled />,
+                    component: './Welcome',
+                },
+            ],
+        }
     ];
 
     const userMenu = (

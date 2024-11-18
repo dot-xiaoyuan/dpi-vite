@@ -16,21 +16,17 @@ const AppChart: React.FC<ApplicationProps> = ({ show, data }) => {
 
     const config = {
         data,
-        xField: "name",
-        yField: "value",
-        color: "#1890ff", // 使用 Ant Design 默认主题色
-        label: {
-            position: "middle",
-            style: {
-                fill: "#fff",
-                opacity: 0.8,
-            },
-        },
-        interactions: [{ type: "active-region" }],
-        autoFit: true,
-        tooltip: {
-            showTitle: false,
-        },
+        xField: 'name',
+        yField: 'value',
+        // color: '#40a9ff', // 自定义柱状图颜色
+        // label: {
+        //     style: {
+        //         fill: '#fff', // 标签字体颜色
+        //         opacity: 0.6,
+        //     },
+        // },
+        interactions: [{type: 'element-active'}],
+        autoFit: true, // 图表自动适应容器大小
     };
 
     return <Bar {...config} />;

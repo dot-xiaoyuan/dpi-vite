@@ -31,6 +31,7 @@ apiClient.interceptors.response.use(
         return response.data;
     },
     (error) => {
+        console.log(error)
         if (error.response) {
             // 处理常见的 HTTP 错误
             const {status, data} = error.response;

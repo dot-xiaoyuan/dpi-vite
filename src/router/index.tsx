@@ -1,8 +1,12 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import {Navigate, Route, Routes} from 'react-router-dom';
 import LoginPage from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import AuthLayout from "../layouts/AuthLayout";
 import MainLayout from "../layouts/MainLayout";
+import Identification from "../pages/Terminal/Identification";
+import Useragent from "../pages/Terminal/Useragent";
+import Application from "../pages/Terminal/Application";
+import IPDetail from "../pages/IPDetail";
 
 // 添加404页面（可选）
 // import NotFound from "../pages/NotFound";  // 你可以自己创建这个页面，或使用默认的 "未找到页面"
@@ -11,15 +15,18 @@ const AppRouter = () => {
     return (
         <Routes>
             {/* 登录页，使用 AuthLayout 布局 */}
-            <Route element={<AuthLayout />}>
-                <Route path="/login" element={<LoginPage />} />
+            <Route element={<AuthLayout/>}>
+                <Route path="/login" element={<LoginPage/>}/>
             </Route>
 
             {/* 受保护页面，使用 MainLayout 布局 */}
-            <Route element={<MainLayout />}>
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/settings" element={<div>Settings Page</div>} />
+            <Route element={<MainLayout/>}>
+                <Route path="/" element={<Navigate to="/dashboard" replace/>}/>
+                <Route path="/dashboard" element={<Dashboard/>}/>
+                <Route path="/terminal/identification" element={<Identification/>}/>
+                <Route path="/terminal/useragent" element={<Useragent/>}/>
+                <Route path="/terminal/application" element={<Application/>}/>
+                <Route path="/terminal/ip-detail" element={<IPDetail/>}/>
             </Route>
 
             {/* 默认页面，根路径跳转到登录页或仪表板 */}
