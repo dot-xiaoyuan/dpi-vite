@@ -58,16 +58,14 @@ const MainLayout: React.FC = () => {
             icon: <PaperClipOutlined />,
             routes: [
                 {
-                    path: '/admin/sub-page1',
+                    path: '/judge/realtime',
                     name: '实时共享终端判定',
-                    icon: 'https://gw.alipayobjects.com/zos/antfincdn/upvrAjAPQX/Logo_Tech%252520UI.svg',
-                    component: './Welcome',
+                    icon: <CrownFilled />,
                 },
                 {
-                    path: '/admin/sub-page2',
+                    path: '/judge/doubt',
                     name: '疑似共享终端判定',
                     icon: <CrownFilled />,
-                    component: './Welcome',
                 },
             ],
         },

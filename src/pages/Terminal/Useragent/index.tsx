@@ -160,9 +160,7 @@ const Useragent: React.FC = () => {
                     pageSize: 20,
                 }}
                 search={{
-                    // 表单渲染配置
-                    defaultCollapsed: false,
-                    labelWidth: "auto",
+                    filterType: "light",
                 }}
                 scroll={{x: "max-content"}}
             />

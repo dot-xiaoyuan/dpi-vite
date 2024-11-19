@@ -118,10 +118,13 @@ const Application: React.FC = () => {
                 request={fetchData}
                 rowKey="id"
                 pagination={{pageSize: 20}}
+                // search={{
+                //     // 支持的搜索字段
+                //     defaultCollapsed: false,
+                //     labelWidth: "auto",
+                // }}
                 search={{
-                    // 支持的搜索字段
-                    defaultCollapsed: false,
-                    labelWidth: "auto",
+                    filterType: "light",
                 }}
                 scroll={{x: "max-content"}}
             />
