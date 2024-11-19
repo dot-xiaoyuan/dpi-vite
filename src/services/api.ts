@@ -2,7 +2,7 @@ import axios from 'axios';
 import {message} from 'antd';
 import {removeToken} from '../utils/storage';
 
-export const baseURL = 'http://127.0.0.1:8088/api'
+export const baseURL = '/api'
 // 创建 Axios 实例
 const apiClient = axios.create({
     baseURL: baseURL, // 后端接口的基础路径

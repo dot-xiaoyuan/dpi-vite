@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Card, Collapse, Descriptions, Empty, message, Spin, Table, Tag} from 'antd';
+import {Card, Collapse, Descriptions, Empty, message, Spin, Table, TableProps, Tag} from 'antd';
 import {useLocation} from "react-router-dom";
 import {createFromIconfontCN} from '@ant-design/icons';
 import TTLChart from "../../components/charts/ttl.tsx";
@@ -11,27 +11,86 @@ const IconFont = createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/c/font_4731706_ofxem8tqzqi.js',
 });
 
-const columns = [
-    {title: "IP", dataIndex: "ip", width: '10%', fixed: 'left'},
-    {title: "OS", dataIndex: "os", width: '20%'},
-    {title: "Version", dataIndex: "version", width: '10%'},
-    {title: "Device", dataIndex: "device", width: '10%'},
-    {title: "Brand", dataIndex: "brand", width: '10%'},
-    {title: "Model", dataIndex: "model", width: '10%'},
+const columns: TableProps<DeviceRecord>['columns'] = [
+    {
+        title: "IP",
+        dataIndex: "ip",
+        width: '10%',
+        fixed: 'left'
+    },
+    {
+        title: "系统",
+        dataIndex: "os",
+        width: '20%',
+        render: (_, record) => (
+            <Tag>{record.os}</Tag>
+        ),
+    },
+    {
+        title: "版本",
+        dataIndex: "version",
+        width: '10%',
+        render: (_, record) => (
+            <Tag>{record.version}</Tag>
+        ),
+    },
+    {
+
+        title: "设备",
+        dataIndex: "device",
+        width: '10%',
+        render: (_, record) => (
+            <Tag>{record.device}</Tag>
+        ),
+    },
+    {
+        title: "品牌",
+        dataIndex: "brand",
+        width: '10%',
+        render: (_, record) => (
+            <Tag>{record.brand}</Tag>
+        ),
+    },
+    {
+        title: "型号",
+        dataIndex: "model",
+        width: '10%',
+        render: (_, record) => (
+            <Tag>{record.model}</Tag>
+        ),
+    },
 ];
 
-const logColumns = [
+const logColumns: TableProps<DeviceRecordLogs>['columns'] = [
     {title: "IP", dataIndex: "ip", width: '10%', fixed: 'left'},
-    {title: "Origin Channel", dataIndex: "origin_chanel", width: '5%'},
-    {title: "Origin Value", dataIndex: "origin_value", width: '40%'},
-    {title: "OS", dataIndex: "os", width: '5%'},
-    {title: "Version", dataIndex: "version", width: '5%'},
-    {title: "Device", dataIndex: "device", width: '5%'},
-    {title: "Brand", dataIndex: "brand", width: '5%'},
-    {title: "Model", dataIndex: "model", width: '5%'},
-    {title: "Remark", dataIndex: "remark", width: '10%'},
     {
-        title: "Last Seen", dataIndex: "last_seen", render: (text: string | number | Date) => {
+        title: "来源", dataIndex: "origin_chanel", width: '5%', render: (_, record) => (
+            <Tag>{record.origin_chanel}</Tag>
+        )
+    },
+    {title: "源值", dataIndex: "origin_value", width: '40%', render: (_, record) => (
+            <Tag>{record.origin_value}</Tag>
+        )},
+    {title: "系统", dataIndex: "os", width: '5%', render: (_, record) => (
+            <Tag>{record.os}</Tag>
+        )},
+    {title: "版本", dataIndex: "version", width: '5%', render: (_, record) => (
+            <Tag>{record.version}</Tag>
+        )},
+    {title: "设备", dataIndex: "device", width: '5%', render: (_, record) => (
+            <Tag>{record.device}</Tag>
+        )},
+    {title: "品牌", dataIndex: "brand", width: '5%', render: (_, record) => (
+            <Tag>{record.brand}</Tag>
+        )},
+    {title: "型号", dataIndex: "model", width: '5%', render: (_, record) => (
+            <Tag>{record.model}</Tag>
+        )},
+    {title: "备注", dataIndex: "remark", width: '10%', render: (_, record) => (
+            <Tag>{record.remark}</Tag>
+        )},
+    {
+        title: "录入时间 ", dataIndex: "last_seen", render: (text: string | number | Date) => {
             const date = new Date(text);
             return date.toLocaleString();
         }, width: '20%',

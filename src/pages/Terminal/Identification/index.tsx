@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {Badge, Tag} from "antd";
+import {Tag, Tooltip} from "antd";
 import {TerminalIdentification} from "../../../services/apiService.ts";
 import {Link} from "react-router-dom";
 import {createFromIconfontCN} from "@ant-design/icons";
@@ -11,6 +11,7 @@ const IconFont = createFromIconfontCN({
 
 interface DataType {
     ip: string;
+    username: string | null;
     ttl: number;
     user_agent: string;
     mac: string;
@@ -52,6 +53,12 @@ const Identification: React.FC = () => {
             title: "IP",
             dataIndex: "ip",
             key: "ip",
+            width: 150,
+        },
+        {
+            title: "用户名",
+            dataIndex: "username",
+            key: "username",
             width: 150,
         },
         {
@@ -100,13 +107,31 @@ const Identification: React.FC = () => {
             search: false,
             render: (_, record) => {
                 if (record.ttl <= 32) {
-                    return <><Badge count={record.ttl} color="green"/> <Tag> Windows 95/98</Tag></>;
+                    return <>
+                        <Tooltip title="Windows 95/98">
+                            <Tag color="green">{record.ttl}</Tag>
+                        </Tooltip>
+                    </>;
                 } else if (record.ttl <= 64) {
-                    return <><Badge count={record.ttl} color="blue"/> <Tag>Windows xp/7、Linux、Mac </Tag></>;
+                    return <>
+                        <Tooltip title="Windows xp/7、Linux、Mac、Android...">
+                            <Tag color="blue">{record.ttl}</Tag>
+                        </Tooltip>
+                    </>;
                 } else if (record.ttl <= 128) {
-                    return <><Badge count={record.ttl} color="cyan"/> <Tag>Windows NT/2000/8/10 </Tag></>;
+                    return <>
+                        <Tooltip title="Windows NT/2000/8/10/11">
+                            <Tag color="cyan">{record.ttl}</Tag>
+                        </Tooltip>
+                    </>;
+                } else if (record.ttl >= 254) {
+                    return <>
+                        <Tooltip title="UNIX(FreeBSD/Solaris)">
+                            <Tag color="orange">{record.ttl}</Tag>
+                        </Tooltip>
+                    </>;
                 } else {
-                    return <><Badge count={record.ttl} color="orange"/> <Tag>UNIX(FreeBSD/Solaris) </Tag></>;
+                    return <><Tag/></>;
                 }
             },
             width: 150,

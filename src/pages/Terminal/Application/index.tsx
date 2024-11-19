@@ -45,6 +45,11 @@ const Application: React.FC = () => {
                 record.metadata.application_info.app_name && <Tag color="cyan">{record.metadata.application_info.app_name}</Tag>
             ), width: 200, search: false
         },
+        {
+            title: "应用类别", dataIndex: "app_category", render: (_, record) => (
+                record.metadata.application_info.app_category && record.metadata.application_info.app_category != "unknown" && <Tag color="cyan-inverse">{record.metadata.application_info.app_category}</Tag>
+            ), width: 200, search: false
+        },
         { title: "http_host", dataIndex: "http_info", search: false, render: (_, record) => record.metadata.http_info.host },
         {
             title: "tls_sni", dataIndex: "tls_info", width: '20%', search: false,
