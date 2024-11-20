@@ -1,10 +1,14 @@
 import React from "react";
-import {TerminalApplication} from "../../../services/apiService.ts";
+import {JudgeRealtime} from "../../../services/apiService.ts";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
 import {Card} from "antd";
 import dayjs from "dayjs";
 import {DeviceRecord} from "../../../types/terminal.ts";
+import {createFromIconfontCN} from "@ant-design/icons";
 
+const IconFont = createFromIconfontCN({
+    scriptUrl: "//at.alicdn.com/t/c/font_4731706_ofxem8tqzqi.js",
+});
 interface RealtimeProps {
     ip: string;
     username: string;
@@ -49,23 +53,21 @@ const Realtime: React.FC = () => {
     ];
 
     const deviceColumns: ProColumns<DeviceRecord>[] = [
-        {title: "IP", dataIndex: "ip", key: "ip"},
-        {title: "OS", dataIndex: "os", key: "os"},
-        {title: "Version", dataIndex: "version", key: "version"},
-        {title: "Device", dataIndex: "device", key: "device"},
-        {title: "Brand", dataIndex: "brand", key: "brand"},
-        {title: "Model", dataIndex: "model", key: "model"},
+        {title: "系统", dataIndex: "os", key: "os"},
+        {title: "版本", dataIndex: "version", key: "version"},
+        {title: "设备", dataIndex: "device", key: "device"},
+        {title: "品牌", dataIndex: "brand", key: "brand"},
+        {title: "型号", dataIndex: "model", key: "model"},
         {
             title: "Icon",
             dataIndex: "icon",
             key: "icon",
             render: (_, record) =>
                 record.icon ? (
-                    <img
-                        src={record.icon}
-                        alt="device icon"
-                        style={{width: 24, height: 24}}
-                    />
+                        <IconFont
+                            type={record.icon || "default-icon"}
+                            style={{fontSize: "24px", marginRight: "8px"}}
+                        />
                 ) : (
                     "N/A"
                 ),
@@ -87,9 +89,9 @@ const Realtime: React.FC = () => {
             condition: conditionString,
         };
 
-        const collection = "stream-" + dayjs(params.collection).format("YY-MM-DD-HH"); // 你可以根据需要动态设置
+        const collection = dayjs(params.collection).format("YY_MM"); // 你可以根据需要动态设置
 
-        const res = await TerminalApplication(requestParams, collection, conditionString);
+        const res = await JudgeRealtime(requestParams, collection, conditionString);
         return {
             data: res.result || [],
             success: true,

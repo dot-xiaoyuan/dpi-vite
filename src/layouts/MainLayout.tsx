@@ -75,10 +75,8 @@ const MainLayout: React.FC = () => {
             icon: <SettingOutlined />,
             routes: [
                 {
-                    path: '/admin/sub-page1',
+                    path: '/policy/access',
                     name: '准入策略',
-                    icon: 'https://gw.alipayobjects.com/zos/antfincdn/upvrAjAPQX/Logo_Tech%252520UI.svg',
-                    component: './Welcome',
                 },
                 {
                     path: '/admin/sub-page2',

@@ -8,6 +8,7 @@ import Useragent from "../pages/Terminal/Useragent";
 import Application from "../pages/Terminal/Application";
 import IPDetail from "../pages/IPDetail";
 import Realtime from "../pages/Judge/Realtime";
+import PolicyManagement from "../pages/Policy/Access";
 
 // 添加404页面（可选）
 // import NotFound from "../pages/NotFound";  // 你可以自己创建这个页面，或使用默认的 "未找到页面"
@@ -29,6 +30,7 @@ const AppRouter = () => {
                 <Route path="/terminal/application" element={<Application/>}/>
                 <Route path="/terminal/ip-detail" element={<IPDetail/>}/>
                 <Route path="/judge/realtime" element={<Realtime/>}/>
+                <Route path="/policy/access" element={<PolicyManagement/>}/>
             </Route>
 
             {/* 默认页面，根路径跳转到登录页或仪表板 */}
