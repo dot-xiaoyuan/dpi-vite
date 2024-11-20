@@ -8,7 +8,7 @@ import {DeviceRecord, DeviceRecordLogs} from "../../types/terminal.ts";
 import ChartArea from "../../components/charts/area.tsx";
 
 const IconFont = createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/c/font_4731706_ofxem8tqzqi.js',
+    scriptUrl: '//at.alicdn.com/t/c/font_4731706_z3gdtn2vd7f.js',
 });
 
 const columns: TableProps<DeviceRecord>['columns'] = [

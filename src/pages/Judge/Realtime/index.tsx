@@ -7,7 +7,7 @@ import {DeviceRecord} from "../../../types/terminal.ts";
 import {createFromIconfontCN} from "@ant-design/icons";
 
 const IconFont = createFromIconfontCN({
-    scriptUrl: "//at.alicdn.com/t/c/font_4731706_ofxem8tqzqi.js",
+    scriptUrl: "//at.alicdn.com/t/c/font_4731706_z3gdtn2vd7f.js",
 });
 interface RealtimeProps {
     ip: string;

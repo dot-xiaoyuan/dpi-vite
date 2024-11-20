@@ -115,9 +115,11 @@ export default () => {
                 pc: data.pc,
                 mobile: data.mobile
             });
+            // @ts-ignore
             if (res.code == 0) {
                 message.success("编辑成功");
             } else {
+                // @ts-ignore
                 message.error(res.message);
             }
             fetchData()
