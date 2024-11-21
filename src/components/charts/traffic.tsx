@@ -14,6 +14,7 @@ const TrafficChart: React.FC<TrafficProps> = ({ data }) => {
     }
 
     const config = {
+        title: "流量趋势",
         data,
         xField: "date",
         yField: "value",

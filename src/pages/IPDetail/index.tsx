@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Card, Collapse, Descriptions, Empty, message, Spin, Table, TableProps, Tag} from 'antd';
+import {Card, Collapse, Descriptions, Empty, message, Spin, Table, TableProps, Tag, Tooltip} from 'antd';
 import {useLocation} from "react-router-dom";
 import {createFromIconfontCN} from '@ant-design/icons';
 import TTLChart from "../../components/charts/ttl.tsx";
@@ -23,7 +23,7 @@ const columns: TableProps<DeviceRecord>['columns'] = [
         dataIndex: "os",
         width: '20%',
         render: (_, record) => (
-            <Tag>{record.os}</Tag>
+            <Tag bordered={false}>{record.os}</Tag>
         ),
     },
     {
@@ -31,7 +31,7 @@ const columns: TableProps<DeviceRecord>['columns'] = [
         dataIndex: "version",
         width: '10%',
         render: (_, record) => (
-            <Tag>{record.version}</Tag>
+            <Tag bordered={false}>{record.version}</Tag>
         ),
     },
     {
@@ -40,7 +40,7 @@ const columns: TableProps<DeviceRecord>['columns'] = [
         dataIndex: "device",
         width: '10%',
         render: (_, record) => (
-            <Tag>{record.device}</Tag>
+            <Tag bordered={false}>{record.device}</Tag>
         ),
     },
     {
@@ -48,7 +48,7 @@ const columns: TableProps<DeviceRecord>['columns'] = [
         dataIndex: "brand",
         width: '10%',
         render: (_, record) => (
-            <Tag>{record.brand}</Tag>
+            <Tag bordered={false}>{record.brand}</Tag>
         ),
     },
     {
@@ -56,7 +56,7 @@ const columns: TableProps<DeviceRecord>['columns'] = [
         dataIndex: "model",
         width: '10%',
         render: (_, record) => (
-            <Tag>{record.model}</Tag>
+            <Tag bordered={false}>{record.model}</Tag>
         ),
     },
 ];
@@ -65,30 +65,51 @@ const logColumns: TableProps<DeviceRecordLogs>['columns'] = [
     {title: "IP", dataIndex: "ip", width: '10%', fixed: 'left'},
     {
         title: "来源", dataIndex: "origin_chanel", width: '5%', render: (_, record) => (
-            <Tag>{record.origin_chanel}</Tag>
+            record.origin_chanel === "device" ? (
+                <Tag bordered={false} color={record.origin_chanel === 'device' ? 'blue' : 'green'}>
+                    {record.origin_chanel}
+                </Tag>
+            ) : (
+                <Tag>No Channel</Tag>
+            )
         )
     },
-    {title: "源值", dataIndex: "origin_value", width: '40%', render: (_, record) => (
-            <Tag>{record.origin_value}</Tag>
-        )},
-    {title: "系统", dataIndex: "os", width: '5%', render: (_, record) => (
-            <Tag>{record.os}</Tag>
-        )},
-    {title: "版本", dataIndex: "version", width: '5%', render: (_, record) => (
-            <Tag>{record.version}</Tag>
-        )},
-    {title: "设备", dataIndex: "device", width: '5%', render: (_, record) => (
-            <Tag>{record.device}</Tag>
-        )},
-    {title: "品牌", dataIndex: "brand", width: '5%', render: (_, record) => (
-            <Tag>{record.brand}</Tag>
-        )},
-    {title: "型号", dataIndex: "model", width: '5%', render: (_, record) => (
-            <Tag>{record.model}</Tag>
-        )},
-    {title: "备注", dataIndex: "remark", width: '10%', render: (_, record) => (
-            <Tag>{record.remark}</Tag>
-        )},
+    {
+        title: "源值", dataIndex: "origin_value", render: (_, record) => (
+            <Tooltip title={record.origin_value}>{record.origin_value.substring(0, 50)}</Tooltip>
+        )
+    },
+    {
+        title: "系统", dataIndex: "os", width: '5%', render: (_, record) => (
+            <Tag bordered={false}>{record.os}</Tag>
+        )
+    },
+    {
+        title: "版本", dataIndex: "version", width: '5%', render: (_, record) => (
+            <Tag bordered={false}> {record.version}</Tag>
+        )
+    },
+    {
+        title: "设备", dataIndex: "device", width: '5%', render: (_, record) => (
+            <Tag bordered={false}>{record.device}</Tag>
+        )
+    },
+    {
+        title: "品牌", dataIndex: "brand", width: '5%', render: (_, record) => (
+            <Tag bordered={false}>{record.brand}</Tag>
+        )
+    },
+    {
+        title: "型号", dataIndex: "model", width: '5%', render: (_, record) => (
+            <Tag bordered={false}>{record.model}</Tag>
+        )
+    },
+    {
+        title: "备注", dataIndex: "remark", width: '10%', render: (_, record) => (
+            <Tag bordered={false}
+                 color={record.remark == "saved device" ? "blue" : "green"}>{record.remark == "saved device" ? "保存设备信息" : "更新设备信息"}</Tag>
+        )
+    },
     {
         title: "录入时间 ", dataIndex: "last_seen", render: (text: string | number | Date) => {
             const date = new Date(text);
@@ -122,19 +143,19 @@ const IPDetail: React.FC = () => {
     const items = [
         {
             label: 'IP',
-            children: <Tag color="green">{ip}</Tag>,
+            children: <Tag color="cyan">{ip}</Tag>,
         },
         {
             label: 'Mac',
-            children: <Tag color="green">{detail?.detail?.mac || "N/A"}</Tag>,
+            children: <Tag color="cyan">{detail?.detail?.mac || "N/A"}</Tag>,
         },
         {
             label: 'TTL',
-            children: <Tag color="green">{detail?.detail?.ttl || "N/A"}</Tag>,
+            children: <Tag color="cyan">{detail?.detail?.ttl || "N/A"}</Tag>,
         },
         {
             label: 'UserAgent',
-            children: <Tag color="green">{detail?.detail?.user_agent || "N/A"}</Tag>,
+            children: <Tag color="cyan">{detail?.detail?.user_agent || "N/A"}</Tag>,
         },
         {
             label: 'Device',
@@ -159,13 +180,13 @@ const IPDetail: React.FC = () => {
         // <PageHeaderWrapper title={`IP Details: ${ip}`}>
         <Spin spinning={loading}>
             <Collapse defaultActiveKey={['1', '2', '3', '4', '5']} ghost>
-                <Collapse.Panel header="Summary" key="1">
+                <Collapse.Panel header="摘要" key="1">
                     <Card bordered={false}>
                         <Descriptions bordered column={{xs: 1, sm: 2, md: 3, lg: 3, xl: 5, xxl: 5}} items={items}/>
                     </Card>
                 </Collapse.Panel>
 
-                <Collapse.Panel header="Device List" key="2">
+                <Collapse.Panel header="设备列表" key="2">
                     <Card bordered={false}>
                         <Table
                             columns={columns}
@@ -176,7 +197,7 @@ const IPDetail: React.FC = () => {
                     </Card>
                 </Collapse.Panel>
 
-                <Collapse.Panel header="Device Logs" key="3">
+                <Collapse.Panel header="设备录入记录" key="3">
                     <Card bordered={false}>
                         <Table
                             columns={logColumns}
@@ -187,15 +208,15 @@ const IPDetail: React.FC = () => {
                     </Card>
                 </Collapse.Panel>
 
-                <Collapse.Panel header="Traffic Distribution Chart" key="4">
+                <Collapse.Panel header="流量分布图表" key="4">
                     <Card bordered={false}>
-                        {detail?.features && <ChartArea data={detail.features}/>}
+                        <ChartArea data={detail?.features ? detail.features : []}/>
                     </Card>
                 </Collapse.Panel>
 
-                <Collapse.Panel header="TTL History Chart" key="5">
+                <Collapse.Panel header="TTL 历史变更图表" key="5">
                     <Card bordered={false}>
-                        {detail?.history?.ttl?.origin_changes && <TTLChart data={detail.history.ttl.origin_changes}/>}
+                        <TTLChart data={detail?.history.ttl?.origin_changes ? detail.history.ttl.origin_changes : []}/>
                     </Card>
                 </Collapse.Panel>
             </Collapse>

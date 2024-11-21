@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import {JudgeRealtime} from "../../../services/apiService.ts";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {Card} from "antd";
+import {Card, Badge, Tag} from "antd";
 import dayjs from "dayjs";
 import {DeviceRecord} from "../../../types/terminal.ts";
 import {createFromIconfontCN} from "@ant-design/icons";
@@ -9,7 +9,9 @@ import {createFromIconfontCN} from "@ant-design/icons";
 const IconFont = createFromIconfontCN({
     scriptUrl: "//at.alicdn.com/t/c/font_4731706_z3gdtn2vd7f.js",
 });
+
 interface RealtimeProps {
+    _id: string;
     ip: string;
     username: string;
     devices: DeviceRecord[] | null;
@@ -20,43 +22,38 @@ interface RealtimeProps {
 }
 
 const Realtime: React.FC = () => {
+    // State to manage expanded rows
+    const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+
     const columns: ProColumns<RealtimeProps>[] = [
-        {title: "集合时间", dataIndex: "collection", valueType: 'date', width: 100, hideInTable: true},
+        {title: "集合时间", dataIndex: "collection", valueType: 'dateMonth', width: 100, hideInTable: true},
+        {title: "IP", dataIndex: "ip"},
+        {title: "用户名", dataIndex: "username"},
         {
-            title: "IP",
-            dataIndex: "ip",
+            title: "设备总数", dataIndex: "all_count", search: false, render: (_, record) => {
+                return <Badge count={record.all_count ? record.all_count : 0} showZero></Badge>
+            }
         },
         {
-            title: "用户名",
-            dataIndex: "username",
+            title: "Mobile Count", dataIndex: "mobile_count", search: false, render: (_, record) => {
+                return <Badge count={record.mobile_count ? record.mobile_count : 0} showZero color="geekblue"></Badge>
+            }
         },
         {
-            title: "设备总数",
-            dataIndex: "all_count",
-            search: false
+            title: "PC Count", dataIndex: "pc_count", search: false, render: (_, record) => {
+                return <Badge count={record.pc_count ? record.pc_count : 0} showZero color="gold"></Badge>
+            }
         },
-        {
-            title: "Mobile Count",
-            dataIndex: "mobile_count",
-            search: false
-        },
-        {
-            title: "PC Count",
-            dataIndex: "pc_count",
-            search: false
-        },
-        {
-            title: "记录时间",
-            dataIndex: "last_seen",
-            valueType: "dateTime", search: false
-        },
+        {title: "记录时间", dataIndex: "last_seen", valueType: "dateTime", search: false},
     ];
 
     const deviceColumns: ProColumns<DeviceRecord>[] = [
         {title: "系统", dataIndex: "os", key: "os"},
         {title: "版本", dataIndex: "version", key: "version"},
         {title: "设备", dataIndex: "device", key: "device"},
-        {title: "品牌", dataIndex: "brand", key: "brand"},
+        {title: "品牌", dataIndex: "brand", key: "brand", render: (_, record) => {
+            return <Tag bordered={false}>{record.brand}</Tag>
+            }},
         {title: "型号", dataIndex: "model", key: "model"},
         {
             title: "Icon",
@@ -64,22 +61,28 @@ const Realtime: React.FC = () => {
             key: "icon",
             render: (_, record) =>
                 record.icon ? (
-                        <IconFont
-                            type={record.icon || "default-icon"}
-                            style={{fontSize: "24px", marginRight: "8px"}}
-                        />
+                    <IconFont
+                        type={record.icon || "default-icon"}
+                        style={{fontSize: "24px", marginRight: "8px"}}
+                    />
                 ) : (
                     "N/A"
                 ),
         },
     ];
+
     const fetchData = async (
         params: Record<string, any>,
     ): Promise<{ data: RealtimeProps[]; success: boolean; total: number }> => {
-        // 构造查询条件
         const conditions: Record<string, any> = {};
         if (!params.collection) {
             params.collection = dayjs();
+        }
+        if (params.ip) {
+            conditions.ip = params.ip;
+        }
+        if (params.username) {
+            conditions.username = params.username;
         }
         const conditionString = JSON.stringify(conditions);
 
@@ -89,7 +92,7 @@ const Realtime: React.FC = () => {
             condition: conditionString,
         };
 
-        const collection = dayjs(params.collection).format("YY_MM"); // 你可以根据需要动态设置
+        const collection = dayjs(params.collection).format("YY_MM");
 
         const res = await JudgeRealtime(requestParams, collection, conditionString);
         return {
@@ -104,25 +107,23 @@ const Realtime: React.FC = () => {
             <ProTable<RealtimeProps>
                 columns={columns}
                 request={fetchData}
-                rowKey="ip"
-                pagination={{
-                    pageSize: 10,
-                }}
+                rowKey="_id"
+                pagination={{pageSize: 10}}
                 expandable={{
+                    expandedRowKeys, // Controlled expanded keys
+                    onExpandedRowsChange: (keys) => setExpandedRowKeys(keys as string[]), // Update state on change
                     expandedRowRender: (record) => (
                         <ProTable<DeviceRecord>
                             columns={deviceColumns}
                             dataSource={record.devices || []}
-                            rowKey="ip"
+                            rowKey={(row) => `${record.ip}-${row.device}`} // Ensure unique keys
                             pagination={false}
                             search={false}
                             toolBarRender={false}
                         />
                     ),
                 }}
-                search={{
-                    filterType: "light",
-                }}
+                search={{filterType: "light"}}
             />
         </Card>
     );

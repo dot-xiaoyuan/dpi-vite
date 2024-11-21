@@ -1,6 +1,6 @@
 import React from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {Card, Tag} from "antd";
+import {Card, Tag, Tooltip} from "antd";
 import dayjs from "dayjs";
 import {TerminalUseragentRecord} from "../../../services/apiService";
 
@@ -39,7 +39,7 @@ const Useragent: React.FC = () => {
             width: 200,
             search: false,
             render: (_, record) => (
-                <Tag>{record.host}</Tag>
+                <Tag bordered={false}>{record.host}</Tag>
             ),
         },
         {
@@ -48,7 +48,7 @@ const Useragent: React.FC = () => {
             search: false,
             width: 200,
             render: (_, record) => (
-                <span title={record.user_agent}>{record.user_agent}</span>
+                <Tooltip title={record.user_agent}>{record.user_agent.substring(0, 20)}...</Tooltip>
             ),
         },
         {
@@ -57,7 +57,7 @@ const Useragent: React.FC = () => {
             search: false,
             width: 50,
             render: (_, record) => (
-                <Tag>{record.ua}</Tag>
+                <Tag bordered={false}>{record.ua}</Tag>
             ),
         },
         {
@@ -65,7 +65,7 @@ const Useragent: React.FC = () => {
             dataIndex: "ua_version",
             search: false,
             render: (_, record) => (
-                <Tag>{record.ua_version}</Tag>
+                <Tag bordered={false}>{record.ua_version}</Tag>
             ),
         },
         {
@@ -73,7 +73,7 @@ const Useragent: React.FC = () => {
             dataIndex: "os",
             search: false,
             render: (_, record) => (
-                <Tag>{record.os}</Tag>
+                <Tag bordered={false}>{record.os}</Tag>
             ),
         },
         {
@@ -81,7 +81,7 @@ const Useragent: React.FC = () => {
             dataIndex: "os_version",
             search: false,
             render: (_, record) => (
-                <Tag>{record.os_version}</Tag>
+                <Tag bordered={false}>{record.os_version}</Tag>
             ),
         },
         {
@@ -89,7 +89,7 @@ const Useragent: React.FC = () => {
             dataIndex: "device",
             search: false,
             render: (_, record) => (
-                <Tag>{record.device}</Tag>
+                <Tag bordered={false}>{record.device}</Tag>
             ),
         },
         {
@@ -97,7 +97,7 @@ const Useragent: React.FC = () => {
             dataIndex: "brand",
             search: false,
             render: (_, record) => (
-                <Tag>{record.brand}</Tag>
+                <Tag bordered={false}>{record.brand}</Tag>
             ),
         },
         {
@@ -105,7 +105,7 @@ const Useragent: React.FC = () => {
             dataIndex: "model",
             search: false,
             render: (_, record) => (
-                <Tag>{record.model}</Tag>
+                <Tag bordered={false}>{record.model}</Tag>
             ),
         },
         {

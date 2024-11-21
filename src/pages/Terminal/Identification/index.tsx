@@ -89,14 +89,14 @@ const Identification: React.FC = () => {
                             >
                                 <IconFont
                                     type={item.icon || "default-icon"}
-                                    style={{fontSize: "24px", marginRight: "8px"}}
+                                    style={{fontSize: "32px", marginRight: "8px"}}
                                 />
-                                <Tag color="green">{item.brand_name}</Tag>
+                                <Tag color="cyan" bordered={false}>{item.brand_name}</Tag>
                             </div>
                         )
                     );
                 }
-                return <Tag color="default">N/A</Tag>;
+                return <Tag bordered={false}></Tag>;
             },
             width: 200,
         },
@@ -109,25 +109,25 @@ const Identification: React.FC = () => {
                 if (record.ttl <= 32) {
                     return <>
                         <Tooltip title="Windows 95/98">
-                            <Tag color="green">{record.ttl}</Tag>
+                            <Tag color="green" bordered={false}>{record.ttl}</Tag>
                         </Tooltip>
                     </>;
                 } else if (record.ttl <= 64) {
                     return <>
                         <Tooltip title="Windows xp/7、Linux、Mac、Android...">
-                            <Tag color="blue">{record.ttl}</Tag>
+                            <Tag color="blue" bordered={false}>{record.ttl}</Tag>
                         </Tooltip>
                     </>;
                 } else if (record.ttl <= 128) {
                     return <>
                         <Tooltip title="Windows NT/2000/8/10/11">
-                            <Tag color="cyan">{record.ttl}</Tag>
+                            <Tag color="cyan" bordered={false}>{record.ttl}</Tag>
                         </Tooltip>
                     </>;
                 } else if (record.ttl >= 254) {
                     return <>
                         <Tooltip title="UNIX(FreeBSD/Solaris)">
-                            <Tag color="orange">{record.ttl}</Tag>
+                            <Tag color="orange" bordered={false}>{record.ttl}</Tag>
                         </Tooltip>
                     </>;
                 } else {

@@ -15,6 +15,8 @@ const AppChart: React.FC<ApplicationProps> = ({ show, data }) => {
     }
 
     const config = {
+        title: "应用 TOP50",
+        // colorField: "#108ee9",
         data,
         xField: 'name',
         yField: 'value',
