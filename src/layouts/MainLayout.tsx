@@ -78,12 +78,12 @@ const MainLayout: React.FC = () => {
                     path: '/policy/access',
                     name: '准入策略',
                 },
-                {
-                    path: '/admin/sub-page2',
-                    name: '控制策略',
-                    icon: <CrownFilled />,
-                    component: './Welcome',
-                },
+                // {
+                //     path: '/admin/sub-page2',
+                //     name: '控制策略',
+                //     icon: <CrownFilled />,
+                //     component: './Welcome',
+                // },
             ],
         },
         {
@@ -92,17 +92,15 @@ const MainLayout: React.FC = () => {
             icon: <BarsOutlined />,
             routes: [
                 {
-                    path: '/admin/sub-page1',
+                    path: '/log/users',
                     name: '用户上下线日志',
-                    icon: 'https://gw.alipayobjects.com/zos/antfincdn/upvrAjAPQX/Logo_Tech%252520UI.svg',
-                    component: './Welcome',
                 },
-                {
-                    path: '/admin/sub-page2',
-                    name: '控制策略',
-                    icon: <CrownFilled />,
-                    component: './Welcome',
-                },
+                // {
+                //     path: '/admin/sub-page2',
+                //     name: '控制策略',
+                //     icon: <CrownFilled />,
+                //     component: './Welcome',
+                // },
             ],
         }
     ];

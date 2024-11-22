@@ -79,6 +79,34 @@ export const JudgeRealtime = async (
     return response.data;
 }
 
+export const JudgeSuspected = async (
+    p?: { pageSize?: number; page?: number },
+    collection?: string,
+    condition?: string,
+) => {
+    const params: Record<string, any> = {
+        ...p,
+        ...(collection && {collection}),
+        ...(condition && {condition}), // 仅在 condition 存在时添加
+    };
+    const response = await apiClient.post("/feature/judge/suspected", params);
+    return response.data;
+}
+
+export const UserEventsLog = async (
+    p?: { pageSize?: number; page?: number },
+    collection?: string,
+    condition?: string,
+) => {
+    const params: Record<string, any> = {
+        ...p,
+        ...(collection && {collection}),
+        ...(condition && {condition}), // 仅在 condition 存在时添加
+    };
+    const response = await apiClient.post("/log/users/events", params);
+    return response.data;
+}
+
 export const PolicyList = async () => {
     const response = await apiClient.get("/policy/list");
     return response.data;

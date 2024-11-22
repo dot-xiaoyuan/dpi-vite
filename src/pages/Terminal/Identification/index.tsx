@@ -183,7 +183,7 @@ const Identification: React.FC = () => {
                 pageSize: 20,
                 showSizeChanger: true,
             }}
-            scroll={{y: 500}}
+            scroll={{y: 800}}
             loading={loading}
             search={false} // 如果不需要搜索栏
         />

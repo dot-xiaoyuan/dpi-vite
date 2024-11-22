@@ -65,13 +65,9 @@ const logColumns: TableProps<DeviceRecordLogs>['columns'] = [
     {title: "IP", dataIndex: "ip", width: '10%', fixed: 'left'},
     {
         title: "来源", dataIndex: "origin_chanel", width: '5%', render: (_, record) => (
-            record.origin_chanel === "device" ? (
-                <Tag bordered={false} color={record.origin_chanel === 'device' ? 'blue' : 'green'}>
-                    {record.origin_chanel}
-                </Tag>
-            ) : (
-                <Tag>No Channel</Tag>
-            )
+            <Tag bordered={false} color={record.origin_chanel === 'device' ? 'blue' : 'green'}>
+                {record.origin_chanel}
+            </Tag>
         )
     },
     {
