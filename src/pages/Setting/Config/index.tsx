@@ -65,15 +65,17 @@ export default () => {
 
     // 处理表单提交
     const handleSave = async (updatedData: any) => {
+        const newData = {
+            ...dataSource,  // 当前状态（如果需要），也可以直接从其他地方获取 updatedData
+            ...updatedData, // 更新的部分
+        };
+
         try {
-            const res = await UpdateConfig(updatedData);
+            const res = await UpdateConfig(newData);
             if (res?.code === 0) {
                 message.success('配置更新成功');
                 // 更新本地数据源
-                setDataSource((prevData) => ({
-                    ...prevData,
-                    ...updatedData,
-                }));
+                setDataSource( newData);
             } else {
                 message.error('更新失败');
             }
@@ -175,7 +177,7 @@ export default () => {
                                             handleSave({
                                                 redis: {
                                                     ...dataSource.redis,
-                                                    [key]: updatedFields,
+                                                    [key]: formValues,
                                                 },
                                             });
                                         }
