@@ -102,6 +102,17 @@ const MainLayout: React.FC = () => {
                 //     component: './Welcome',
                 // },
             ],
+        },
+        {
+            path: '/setting',
+            name: '系统管理',
+            icon: <SettingOutlined />,
+            routes: [
+                {
+                    path: '/setting/config',
+                    name: '配置管理',
+                }
+            ]
         }
     ];
 
