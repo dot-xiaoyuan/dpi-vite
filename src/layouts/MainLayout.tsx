@@ -1,7 +1,7 @@
 import React from 'react';
 import {ProLayout} from '@ant-design/pro-components';
 import {Outlet, useNavigate} from 'react-router-dom';
-import {Dropdown, Menu, Space} from 'antd';
+import {Dropdown, Menu} from 'antd';
 import {
     BarChartOutlined,
     DashboardOutlined,
@@ -121,8 +121,9 @@ const MainLayout: React.FC = () => {
     return (
         <ProLayout
             siderWidth={256}
+            layout="mix"
             title="DPI Analyze"
-            logo={<BarChartOutlined/>}
+            logo={<BarChartOutlined />}
             route={{
                 path: '/',
                 routes: menuItems,
@@ -134,16 +135,20 @@ const MainLayout: React.FC = () => {
             menuItemRender={(item, dom) => (
                 <div onClick={() => navigate(item.path || '/')}>{dom}</div>
             )}
-            rightContentRender={() => (
-                <Space>
-                    <Dropdown overlay={userMenu}>
-                        <span style={{cursor: 'pointer'}}>{user?.username || 'Guest'}</span>
-                    </Dropdown>
-                </Space>
-            )}
-            contentWidth="Fixed"
+            contentWidth="Fluid"
+            contentStyle={{
+                margin: 0,
+                padding: 16,
+            }}
+            actionsRender={() => [
+                <Dropdown overlay={userMenu}>
+                    <span style={{ cursor: 'pointer' }}>
+                        {user?.username || 'Guest'}
+                    </span>
+                </Dropdown>,
+            ]}
         >
-            <Outlet/>
+            <Outlet />
         </ProLayout>
     );
 };
