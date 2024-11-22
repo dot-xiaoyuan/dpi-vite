@@ -111,6 +111,10 @@ const MainLayout: React.FC = () => {
                 {
                     path: '/setting/config',
                     name: '配置管理',
+                },
+                {
+                    path: '/setting/change-password',
+                    name: '修改密码',
                 }
             ]
         }

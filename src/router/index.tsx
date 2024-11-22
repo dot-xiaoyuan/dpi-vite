@@ -11,6 +11,8 @@ import Realtime from "../pages/Judge/Realtime";
 import PolicyManagement from "../pages/Policy/Access";
 import Suspected from "../pages/Judge/Suspected";
 import UserEvents from "../pages/Log/Users";
+import ConfigForm from "../pages/Setting/Config";
+import ChangePassword from "../pages/Setting/ChangePassword";
 
 // 添加404页面（可选）
 // import NotFound from "../pages/NotFound";  // 你可以自己创建这个页面，或使用默认的 "未找到页面"
@@ -35,6 +37,8 @@ const AppRouter = () => {
                 <Route path="/judge/doubt" element={<Suspected/>}/>
                 <Route path="/log/users" element={<UserEvents/>}/>
                 <Route path="/policy/access" element={<PolicyManagement/>}/>
+                <Route path="/setting/config" element={<ConfigForm/>}/>
+                <Route path="/setting/change-password" element={<ChangePassword/>}/>
             </Route>
 
             {/* 默认页面，根路径跳转到登录页或仪表板 */}
