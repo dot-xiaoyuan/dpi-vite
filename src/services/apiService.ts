@@ -1,5 +1,17 @@
 import apiClient from "./api.ts";
 
+export const ChangePassword = async (
+    oldPassword: string,
+    newPassword: string,
+)=> {
+    const params: Record<string, any> = {
+        oldPassword,
+        newPassword,
+    }
+    const response = await apiClient.post("/change-password", params);
+    return response.data;
+}
+
 export const TerminalIdentification = async (
     page = 1,
     pageSize = 20,
