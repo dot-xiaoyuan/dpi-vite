@@ -4,6 +4,7 @@ import { Form, Input, Space, Button, Modal, message } from 'antd'
 import { useAuth } from '../../../context/AuthContext.tsx'
 import { useNavigate } from 'react-router-dom'
 import SHA256 from 'crypto-js/sha256'
+import { ChangePass } from '../../../services/apiService.ts'
 
 const ChangePassword: React.FC = () => {
     const [form] = Form.useForm()
@@ -18,13 +19,16 @@ const ChangePassword: React.FC = () => {
             const oldPass = SHA256(values.currentPassword).toString()
             const newPass = SHA256(values.newPassword).toString()
 
-            console.log(oldPass, newPass)
-            // TODO: 在这里处理密码更新的接口请求
-
-            // 假设请求成功，打开弹窗
-            setIsModalOpen(true)
+            const response = await ChangePass(oldPass, newPass);
+            console.log('---res',response)
+            if (response?.code === 0) {
+                // 修改成功，打开弹窗
+                setIsModalOpen(true)
+            } else {
+                message.error(response.message)
+            }
         } catch (error) {
-            message.error('表单验证失败，请检查输入的密码！')
+            message.error('网络请求失败，请联系管理员！')
             console.log('表单验证失败:', error)
         }
     }, [form])
