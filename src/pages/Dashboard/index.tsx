@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
             .then((res) => {
                 let result = res.data
                 if (isMounted && result) {
-                    console.log(result);
+                    // console.log(result);
                     // 设置 Dashboard 数据
                     setApplication(result.charts.application || []);
                     setApplicationLayer(result.charts.application_layer || []);
@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
             <Row gutter={16}>
                 <Col span={8}>
                     <Card bordered={false}>
-                        <Statistic title="总流量" value={totalTraffics} suffix="kb"/>
+                        <Statistic title="总流量" value={totalTraffics}/>
                     </Card>
                 </Col>
                 <Col span={8}>

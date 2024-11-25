@@ -8,8 +8,7 @@ export const ChangePass = async (
         old_password,
         new_password,
     }
-    const response = await apiClient.post("/change-password", params);
-    return response.data;
+    return await apiClient.post("/change-password", params);
 }
 
 export const TerminalIdentification = async (

@@ -21,10 +21,12 @@ const ChangePassword: React.FC = () => {
 
             const response = await ChangePass(oldPass, newPass);
             console.log('---res',response)
+            // @ts-ignore
             if (response?.code === 0) {
                 // 修改成功，打开弹窗
                 setIsModalOpen(true)
             } else {
+                // @ts-ignore
                 message.error(response.message)
             }
         } catch (error) {
