@@ -120,15 +120,13 @@ export const UserEventsLog = async (
 
 export const GetConfig = async (
 ) => {
-    const response = await apiClient.get("/setting/config");
-    return response.data;
+    return await apiClient.get("/setting/config");
 }
 
 export const UpdateConfig = async (
     params:any
 ) => {
-    const response = await apiClient.post("/setting/config", params);
-    return response.data;
+    return await apiClient.put("/setting/config", params);
 }
 
 export const PolicyList = async () => {
