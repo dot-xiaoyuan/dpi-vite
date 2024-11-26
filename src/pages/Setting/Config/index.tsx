@@ -26,7 +26,7 @@ const ConfigForm: React.FC = () => {
     const onFinish = async (values: any) => {
         try {
             // 这里你可以调用接口来提交表单数据
-            const response = await UpdateConfig(values);
+            const response: any = await UpdateConfig(values);
             if (response.code == 0) {
                 message.success('修改成功！');
             } else {
@@ -63,20 +63,19 @@ const ConfigForm: React.FC = () => {
                                 onFinish={onFinish}
                             >
                                 <Form.Item label="调试模式" key="debug" name="debug">
-                                    <Switch defaultChecked={config.debug}/>
+                                    <Switch />
                                 </Form.Item>
                                 <Form.Item label="开启TTL分析" key="use_ttl" name="use_ttl">
-                                    <Switch defaultChecked={config.use_ttl}/>
+                                    <Switch />
                                 </Form.Item>
                                 <Form.Item label="开启特征分析" key="use_feature" name="use_feature">
-                                    <Switch defaultChecked={config.use_feature}/>
+                                    <Switch />
                                 </Form.Item>
                                 <Form.Item label="开启UA分析" key="use_ua" name="use_ua">
-                                    <Switch defaultChecked={config.use_ua}/>
+                                    <Switch />
                                 </Form.Item>
-                                <Form.Item label="仅关注在线用户" key="follow_only_online_users"
-                                           name="follow_only_online_users">
-                                    <Switch defaultChecked={config.follow_only_online_users}/>
+                                <Form.Item label="仅关注在线用户" key="follow_only_online_users" name="follow_only_online_users">
+                                    <Switch />
                                 </Form.Item>
                                 <Form.Item wrapperCol={{span: 6, offset: 10}}>
                                     <Button type="primary" htmlType="submit">
@@ -102,52 +101,52 @@ const ConfigForm: React.FC = () => {
                     <Row gutter={24}>
                         <Col span={6}>
                             <Card title="DPI">
-                                <Form.Item label="地址" name="redis.dpi.host">
+                                <Form.Item label="地址" name={['redis', 'dpi', 'host']}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item label="端口" name="redis.dpi.port">
+                                <Form.Item label="端口" name={['redis', 'dpi', 'port']}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item label="密码" name="redis.dpi.password">
+                                <Form.Item label="密码" name={['redis', 'dpi', 'password']}>
                                     <Input.Password/>
                                 </Form.Item>
                             </Card>
                         </Col>
                         <Col span={6}>
                             <Card title="Online">
-                                <Form.Item label="地址" name="redis.online.host">
+                                <Form.Item label="地址" name={['redis', 'online', 'host']}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item label="端口" name="redis.online.port">
+                                <Form.Item label="端口" name={['redis', 'online', 'port']}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item label="密码" name="redis.online.password">
+                                <Form.Item label="密码" name={['redis', 'online', 'password']}>
                                     <Input.Password/>
                                 </Form.Item>
                             </Card>
                         </Col>
                         <Col span={6}>
                             <Card title="Users">
-                                <Form.Item label="地址" name="redis.users.host">
+                                <Form.Item label="地址" name={['redis', 'users', 'host']}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item label="端口" name="redis.users.port">
+                                <Form.Item label="端口" name={['redis', 'users', 'port']}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item label="密码" name="redis.users.password">
+                                <Form.Item label="密码" name={['redis', 'users', 'password']}>
                                     <Input.Password/>
                                 </Form.Item>
                             </Card>
                         </Col>
                         <Col span={6}>
                             <Card title="Cache">
-                                <Form.Item label="地址" name="redis.cache.host">
+                                <Form.Item label="地址" name={['redis', 'cache', 'host']}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item label="端口" name="redis.cache.port">
+                                <Form.Item label="端口" name={['redis', 'cache', 'port']}>
                                     <Input/>
                                 </Form.Item>
-                                <Form.Item label="密码" name="redis.cache.password">
+                                <Form.Item label="密码" name={['redis', 'cache', 'password']}>
                                     <Input.Password/>
                                 </Form.Item>
                             </Card>
