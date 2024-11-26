@@ -134,7 +134,10 @@ const Suspected: React.FC = () => {
                 columns={columns}
                 request={fetchData}
                 rowKey="_id"
-                pagination={{pageSize: 10}}
+                pagination={{
+                    showSizeChanger: true,
+                    defaultPageSize: 10,
+                }}
                 search={{filterType: "light"}}
             />
         </Card>

@@ -117,7 +117,10 @@ const Application: React.FC = () => {
                 columns={columns}
                 request={fetchData}
                 rowKey="id"
-                pagination={{pageSize: 20}}
+                pagination={{
+                    showSizeChanger: true,
+                    defaultPageSize: 10,
+                }}
                 // search={{
                 //     // 支持的搜索字段
                 //     defaultCollapsed: false,

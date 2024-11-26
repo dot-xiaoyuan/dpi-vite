@@ -157,7 +157,8 @@ const Useragent: React.FC = () => {
                 request={fetchData}
                 rowKey="ip"
                 pagination={{
-                    pageSize: 20,
+                    showSizeChanger: true,
+                    defaultPageSize: 20,
                 }}
                 search={{
                     filterType: "light",

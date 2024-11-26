@@ -108,7 +108,10 @@ const Realtime: React.FC = () => {
                 columns={columns}
                 request={fetchData}
                 rowKey="_id"
-                pagination={{pageSize: 10}}
+                pagination={{
+                    showSizeChanger: true,
+                    defaultPageSize: 10,
+                }}
                 expandable={{
                     expandedRowKeys, // Controlled expanded keys
                     onExpandedRowsChange: (keys) => setExpandedRowKeys(keys as string[]), // Update state on change

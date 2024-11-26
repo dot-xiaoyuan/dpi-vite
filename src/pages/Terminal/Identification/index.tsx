@@ -180,8 +180,8 @@ const Identification: React.FC = () => {
             }}
             rowKey="ip"
             pagination={{
-                pageSize: 20,
                 showSizeChanger: true,
+                defaultPageSize: 20,
             }}
             scroll={{y: 800}}
             loading={loading}
