@@ -158,7 +158,7 @@ const MainLayout: React.FC = () => {
             actionsRender={() => [
                 <Dropdown overlay={userMenu}>
                     <span style={{ cursor: 'pointer' }}>
-                        {user?.username || 'Guest'}
+                        {localStorage.getItem('username') || user?.username || 'Guest'}
                     </span>
                 </Dropdown>,
             ]}

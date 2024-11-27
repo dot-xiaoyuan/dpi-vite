@@ -12,6 +12,7 @@ const LoginPage: React.FC = () => {
         try {
             const response = await login(values.username, values.password);
             const token = response.data.token;
+            localStorage.setItem('username', values.username);
             localStorage.setItem('auth_token', token);
             if (response && response.data.message === 'Login successful') {
                 message.success('登录成功！');
