@@ -94,16 +94,21 @@ const ConfigForm: React.FC = () => {
         }
     };
 
-    const handleUpdate = async (rowKey: any, data: any) => {
-        const params: any =  {
-            [rowKey]: {
-                normal: data.normal,
-                remark: data.remark,
-                threshold: data.threshold
-            }
-        }
+    const handleUpdate = async () => {
+        const thresholds: any =  dataSource.reduce((acc, item: any) => {
+            acc[item.name] = {
+                normal: item.normal,
+                remark: item.remark,
+                threshold: item.threshold,
+            };
+            return acc;
+        }, {} as { [key: string]: { normal: any; remark: any; threshold: any } });
+        console.log('提交的表格数据:', thresholds);
+
         try {
-            const res: any = await UpdateConfig(params);
+            const res: any = await UpdateConfig({
+                thresholds: thresholds
+            });
             if (res.code == 0) {
                 message.success("编辑成功");
             } else {
