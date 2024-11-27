@@ -99,7 +99,7 @@ const ConfigForm: React.FC = () => {
             [rowKey] : {
                 normal: data.normal,
                 remark: data.remark,
-                threshold: data.threshold,
+                threshold: Number(data.threshold),
             }
         }
         const thresholds: any =  dataSource.reduce((acc, item: any) => {
@@ -109,7 +109,7 @@ const ConfigForm: React.FC = () => {
                 threshold: item.threshold,
             };
             return acc;
-        }, {} as { [key: string]: { normal: any; remark: any; threshold: any } });
+        }, {} as { [key: string]: { normal: string; remark: string; threshold: number } });
 
         try {
             const res: any = await UpdateConfig({
