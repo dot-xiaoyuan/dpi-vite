@@ -1,12 +1,67 @@
 import React, {useEffect, useState} from "react";
 import {Button, Card, Col, Form, Input, message, Row, Spin, Switch, Tabs} from "antd";
-import {GetConfig, UpdateConfig} from "../../../services/apiService.ts";
+import {GetConfig, UpdateConfig}        from "../../../services/apiService.ts";
+import { EditableProTable, ProColumns } from '@ant-design/pro-components'
+
+type ThresholdType = {
+    name: string;
+    normal: string;
+    remark: string;
+    threshold: number;
+}
 
 const {TabPane} = Tabs;
 
 const ConfigForm: React.FC = () => {
     const [config, setConfig] = useState<any | null>(null); // 存储接口返回的数据
     const [loading, setLoading] = useState(true);
+    const [dataSource, setDataSource] = useState<readonly ThresholdType[]>([]);
+    const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+
+
+    const columns: ProColumns<ThresholdType>[] = [
+        {
+            title: '阈值名称',
+            dataIndex: 'name',
+            readonly: true,
+        },
+        {
+            title: '阈值说明',
+            dataIndex: 'normal',
+            readonly: true,
+        },
+        {
+            title: '备注',
+            dataIndex: 'remark',
+            readonly: true,
+        },
+        {
+            title: '阈值',
+            dataIndex: 'threshold',
+        },
+        {
+            title: '操作',
+            valueType: 'option',
+            width: 200,
+            render: (_text, record, _, action) => [
+                <a
+                    key="editable"
+                    onClick={() => {
+                        action?.startEditable?.(record.name);
+                    }}
+                >
+                    编辑
+                </a>,
+            ],
+        },
+    ]
+
+    const thresholdList = () => {
+        return Object.keys(config.thresholds).map((key: string) => ({
+            name: key,
+            ...config.thresholds[key]
+        }))
+    }
 
     useEffect(() => {
         const fetchConfig = async () => {
@@ -38,6 +93,27 @@ const ConfigForm: React.FC = () => {
             console.error("Error submitting form:", error);
         }
     };
+
+    const handleUpdate = async (rowKey: any, data: any) => {
+        const params: any =  {
+            [rowKey]: {
+                normal: data.normal,
+                remark: data.remark,
+                threshold: data.threshold
+            }
+        }
+        try {
+            const res: any = await UpdateConfig(params);
+            if (res.code == 0) {
+                message.success("编辑成功");
+            } else {
+                message.error(res.message);
+            }
+        } catch (error) {
+            message.error('编辑策略失败，请稍后再试！');
+            console.error(error);
+        }
+    }
 
     if (loading) {
         return <Spin size="large"/>;
@@ -162,15 +238,27 @@ const ConfigForm: React.FC = () => {
 
             {/* 阈值配置 Tab */}
             <TabPane tab="阈值配置" key="3">
-                <Form layout="vertical">
-                    {/* 阈值配置 */}
-                    {/*<Form.Item label="SNI Threshold" key="sniThreshold">*/}
-                    {/*    <Input defaultValue={config.thresholds.sni} />*/}
-                    {/*</Form.Item>*/}
-                    {/*<Form.Item label="HTTP Threshold" key="httpThreshold">*/}
-                    {/*    <Input defaultValue={config.thresholds.http} />*/}
-                    {/*</Form.Item>*/}
-                </Form>
+                <EditableProTable<ThresholdType>
+                    rowKey="name"
+                    scroll={{
+                        x: 960,
+                    }}
+                    loading={false}
+                    recordCreatorProps={false}
+                    columns={columns}
+                    request={async () => ({
+                        data: thresholdList(),
+                    })}
+                    value={dataSource}
+                    onChange={setDataSource}
+                    editable={{
+                        type: 'multiple',
+                        editableKeys,
+                        onSave: handleUpdate,
+                        actionRender: (_, __, dom) => [dom.save, dom.cancel],
+                        onChange: setEditableRowKeys,
+                    }}
+                />
             </TabPane>
         </Tabs>
     );
