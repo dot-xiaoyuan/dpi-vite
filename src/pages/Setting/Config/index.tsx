@@ -189,7 +189,7 @@ const ConfigForm: React.FC = () => {
                     onFinish={onFinish}
                 >
                     <Row gutter={24}>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                             <Card title="DPI">
                                 <Form.Item label="地址" name={['redis', 'dpi', 'host']}>
                                     <Input/>
@@ -202,7 +202,7 @@ const ConfigForm: React.FC = () => {
                                 </Form.Item>
                             </Card>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                             <Card title="Online">
                                 <Form.Item label="地址" name={['redis', 'online', 'host']}>
                                     <Input/>
@@ -215,7 +215,7 @@ const ConfigForm: React.FC = () => {
                                 </Form.Item>
                             </Card>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                             <Card title="Users">
                                 <Form.Item label="地址" name={['redis', 'users', 'host']}>
                                     <Input/>
@@ -228,7 +228,7 @@ const ConfigForm: React.FC = () => {
                                 </Form.Item>
                             </Card>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                             <Card title="Cache">
                                 <Form.Item label="地址" name={['redis', 'cache', 'host']}>
                                     <Input/>
@@ -242,11 +242,15 @@ const ConfigForm: React.FC = () => {
                             </Card>
                         </Col>
                     </Row>
-                    <Form.Item wrapperCol={{span: 6, offset: 10}}>
-                        <Button type="primary" htmlType="submit">
-                            提交
-                        </Button>
-                    </Form.Item>
+                    <Row>
+                        <Col span={24} style={{ textAlign: 'center', marginTop: '20px' }}>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">
+                                    提交
+                                </Button>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                 </Form>
             </TabPane>
 

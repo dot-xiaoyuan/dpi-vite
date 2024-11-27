@@ -1,96 +1,108 @@
-import React, {useEffect, useState} from "react";
-import {Card, Col, Row, Space, Statistic} from "antd";
-import Traffic from "../../components/charts/traffic";
-import AppChart from "../../components/charts/app";
-import ProtocolChart from "../../components/charts/protocol";
-import {ApplicationChart, ApplicationLayerChart, TrafficChartData, TransportLayerChart,} from "../../types/dashboard";
+import {ProCard, StatisticCard} from '@ant-design/pro-components';
+import RcResizeObserver from 'rc-resize-observer';
+import React, {useEffect, useState} from 'react';
 import {dashboard} from "../../services/authService.ts";
+import Traffic from "../../components/charts/traffic.tsx";
+import {TrafficChartData} from "../../types/dashboard.ts";
+import ProtocolLayerChart from "../../components/charts/protocolLayer.tsx";
+import AppCategoryChart from "../../components/charts/AppCategory.tsx";
+
+type TotalProps = {
+    sessions: number
+    packets: number
+    traffics: number
+    users: number
+}
+
+type ChartData = {
+    app_category: { type: string; value: number }[];
+    application: { type: string; value: number }[];
+    protocol: { type: string; value: number }[];
+    traffic: TrafficChartData[];
+};
 
 const Dashboard: React.FC = () => {
-    const [application, setApplication] = useState<ApplicationChart[]>([]);
-    const [applicationLayer, setApplicationLayer] = useState<ApplicationLayerChart[]>([]);
-    const [traffic, setTraffic] = useState<TrafficChartData[]>([]);
-    const [transportLayer, setTransportLayer] = useState<TransportLayerChart[]>([]);
-    const [totalPackets, setTotalPackets] = useState<number>(0);
-    const [totalSessions, setTotalSessions] = useState<number>(0);
-    const [totalTraffics, setTotalTraffics] = useState<number>(0);
+    const [responsive, setResponsive] = useState(false);
+    const [total, setTotal] = useState<TotalProps>({
+        sessions: 0,
+        packets: 0,
+        traffics: 0,
+        users: 0,
+    });
+    const [charts, setCharts] = useState<ChartData>();
 
     useEffect(() => {
-        let isMounted = true;
-
-        dashboard()
-            .then((res) => {
-                let result = res.data
-                if (isMounted && result) {
-                    // console.log(result);
-                    // 设置 Dashboard 数据
-                    setApplication(result.charts.application || []);
-                    setApplicationLayer(result.charts.application_layer || []);
-                    setTraffic(result.charts.traffic || []);
-                    setTransportLayer(result.charts.transport_layer || []);
-                    setTotalPackets(result.total.packets || 0);
-                    setTotalSessions(result.total.sessions || 0);
-                    setTotalTraffics(result.total.traffics || 0);
-                }
-            })
-            .catch(() => {
-                // console.error("Error fetching dashboard data:", error);
-            });
-
-        return () => {
-            isMounted = false;
-        };
+        dashboard().then((res) => {
+            setTotal(res.data.total);
+            setCharts(res.data.charts);
+        })
     }, []);
-
     return (
-        <Space direction="vertical" size="middle" style={{display: "flex"}}>
-            {/* 数据统计 */}
-            <Row gutter={16}>
-                <Col span={8}>
-                    <Card bordered={false}>
-                        <Statistic title="总流量" value={totalTraffics}/>
-                    </Card>
-                </Col>
-                <Col span={8}>
-                    <Card bordered={false}>
-                        <Statistic title="总包数" value={totalPackets}/>
-                    </Card>
-                </Col>
-                <Col span={8}>
-                    <Card bordered={false}>
-                        <Statistic title="总会话数" value={totalSessions}/>
-                    </Card>
-                </Col>
-            </Row>
+        <RcResizeObserver
+            key="resize-observer"
+            onResize={(offset) => {
+                setResponsive(offset.width < 596);
+            }}
+        >
+            <ProCard
+                title="数据概览"
+                extra=""
+                split={responsive ? 'horizontal' : 'vertical'}
+                headerBordered
+                bordered
+            >
+                <ProCard split="horizontal">
+                    <ProCard split="horizontal">
+                        <ProCard split="vertical">
+                            <StatisticCard
+                                statistic={{
+                                    title: '在线数',
+                                    value: total.users,
 
-            {/* 协议和应用分布 */}
-            <Row gutter={16}>
-                <Col span={4}>
-                    <Card bordered={false}>
-                        <ProtocolChart data={transportLayer} title="传输层协议分布"/>
-                    </Card>
-                </Col>
-                <Col span={4}>
-                    <Card bordered={false}>
-                        <ProtocolChart data={applicationLayer} title="应用层协议分布"/>
-                    </Card>
-                </Col>
-                <Col span={16}>
-                    <Card bordered={false}>
-                        <AppChart data={application} show={application.length > 0}/>
-                    </Card>
-                </Col>
-            </Row>
+                                }}
+                            />
+                            <StatisticCard
+                                statistic={{
+                                    title: '总流量',
+                                    value: total.traffics,
+                                }}
+                            />
+                        </ProCard>
+                        <ProCard split="vertical">
+                            <StatisticCard
+                                statistic={{
+                                    title: '总会话数',
+                                    value: total.sessions,
+                                }}
+                            />
+                            <StatisticCard
+                                statistic={{
+                                    title: '总包数',
+                                    value: total.packets,
+                                }}
+                            />
+                        </ProCard>
+                    </ProCard>
+                    <ProCard split="horizontal">
+                        <ProCard split="vertical">
+                            <StatisticCard
+                                title="应用分类占比"
+                                chart={<AppCategoryChart data={charts?.app_category ?? []}/>}
+                            />
+                            <StatisticCard
+                                title="协议使用情况"
+                                chart={<ProtocolLayerChart data={charts?.protocol ?? []}/>}
+                            />
+                        </ProCard>
+                    </ProCard>
+                </ProCard>
+                <StatisticCard
+                    title="流量变化趋势"
+                    chart={<Traffic data={charts?.traffic ?? []}/>}
+                />
 
-            {/* 流量趋势 */}
-            <Row gutter={16}>
-                <Col span={24}>
-                    <Card bordered={false}>
-                        <Traffic data={traffic}/>
-                    </Card>
-                </Col>
-            </Row>
-        </Space>
+            </ProCard>
+        </RcResizeObserver>
     );
 };
 
