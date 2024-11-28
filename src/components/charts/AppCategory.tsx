@@ -12,6 +12,7 @@ const AppCategoryChart: React.FC<any> = ({data}) => {
         // yField: 'value',
         angleField: 'value',
         colorField: 'type',
+        tooltip: { name: '数值', value: 'value', channel: 'y'}
     };
     return <Pie {...config} />;
 };
