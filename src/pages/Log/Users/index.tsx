@@ -61,13 +61,23 @@ const UserEvents: React.FC = () => {
             title: "记录ID",
             dataIndex: "_id",
             width: '10%',
+            search: false,
         },
         {
             title: "事件类型",
             dataIndex: "action",
+            valueType: 'select',
+            valueEnum: {
+                1: {text: '上线', status: 'Default'},
+                2: {text: '下线', status: 'Success'},
+            },
+            fieldProps: {
+                placeholder: '请选择状态',
+            },
             render: (_, record) => (
                 <span>
-                {record.action == 1 ? <Tag color="green" bordered={false}>上线</Tag> : <Tag color="red" bordered={false}>下线</Tag>}
+                {record.action == 1 ? <Tag color="green" bordered={false}>上线</Tag> :
+                    <Tag color="red" bordered={false}>下线</Tag>}
             </span>
             ),
             width: '10%',
@@ -80,7 +90,7 @@ const UserEvents: React.FC = () => {
         },
         {
             title: "IP",
-            dataIndex: "IP",
+            dataIndex: "ip",
             render: (_, record) => `${record.ip}`,
             width: '10%',
         },
@@ -110,13 +120,14 @@ const UserEvents: React.FC = () => {
         },
         {
             title: "事件时间",
-            dataIndex: "add_time",
+            dataIndex: "event_time",
             render: (_, record) => {
-                const timestamp = Number(record.add_time); // 确保是数字类型
+                const timestamp = Number(record.action == 1 ? record.add_time : record.drop_time); // 确保是数字类型
                 const date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp); // 秒级转换为毫秒
                 return date.toLocaleTimeString(); // 根据本地时间格式化时间
             },
             width: '10%',
+            search: false,
         },
     ];
 
@@ -125,14 +136,21 @@ const UserEvents: React.FC = () => {
         params: Record<string, any>,
     ): Promise<{ data: UserEventsLogProps[]; success: boolean; total: number }> => {
         const conditions: Record<string, any> = {};
+        console.log(params)
         if (!params.collection) {
             params.collection = dayjs();
         }
         if (params.ip) {
             conditions.ip = params.ip;
         }
-        if (params.username) {
-            conditions.username = params.username;
+        if (params.action) {
+            conditions.action = parseInt(params.action);
+        }
+        if (params.user_name) {
+            conditions.user_name = params.user_name;
+        }
+        if (params.user_mac) {
+            conditions.user_mac = params.user_mac;
         }
         const conditionString = JSON.stringify(conditions);
 

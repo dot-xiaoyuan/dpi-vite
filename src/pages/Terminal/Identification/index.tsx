@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {Tag, Tooltip} from "antd";
+import {Badge, Space, Tag, Tooltip} from "antd";
 import {TerminalIdentification} from "../../../services/apiService.ts";
 import {Link} from "react-router-dom";
 import {createFromIconfontCN} from "@ant-design/icons";
@@ -16,6 +16,9 @@ interface DataType {
     user_agent: string;
     mac: string;
     device: string | null;
+    all: string | null;
+    mobile: string | null;
+    pc: string | null;
     last_seen: string;
 }
 
@@ -101,6 +104,35 @@ const Identification: React.FC = () => {
             width: 200,
         },
         {
+            title: "设备数量",
+            dataIndex: "device_count",
+            key: "device_count",
+            search: false,
+            render: (_, record) => {
+                return <>
+                    <Space size={16} wrap>
+                        <Tooltip title="设备总数">
+                            <Badge count={record.all ?? 0}>
+                                <Tag bordered={false} color="red">ALL</Tag>
+                            </Badge>
+                        </Tooltip>
+                        <Tooltip title="移动端设备数">
+                            <Badge count={record.mobile ?? 0}>
+                                <Tag bordered={false} color="cyan">Mobile</Tag>
+                            </Badge>
+                        </Tooltip>
+                        <Tooltip title="桌面设备数">
+                            <Badge count={record.pc ?? 0}>
+                                <Tag bordered={false} color="orange">PC</Tag>
+                            </Badge>
+                        </Tooltip>
+                    </Space>
+
+                </>
+            },
+            width: 200,
+        },
+        {
             title: "TTL",
             dataIndex: "ttl",
             key: "ttl",
@@ -147,6 +179,11 @@ const Identification: React.FC = () => {
             dataIndex: "last_seen",
             key: "last_seen",
             valueType: "dateTime",
+            render: (_, record) => {
+                const timestamp = Number(record.last_seen); // 确保是数字类型
+                const date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp); // 秒级转换为毫秒
+                return date.toLocaleString(); // 根据本地时间格式化时间
+            },
             width: 200,
             search: false,
         },
