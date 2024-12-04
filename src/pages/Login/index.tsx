@@ -1,10 +1,11 @@
 import React from 'react';
 import {LoginForm, ProConfigProvider, ProFormText} from '@ant-design/pro-components';
 import {message} from 'antd';
-import {BarChartOutlined, LockOutlined, UserOutlined} from '@ant-design/icons';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import './index.css';
 import {login} from "../../services/authService.ts";
 import {useNavigate} from "react-router-dom";
+import logo          from '../../assets/logo.png';
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ const LoginPage: React.FC = () => {
         <ProConfigProvider hashed={false}>
             <div>
                 <LoginForm
-                    logo={<BarChartOutlined style={{fontSize: '3rem'}}/>}
+                    logo={ <img alt="" src={ logo }/> }
                     title="DPI-Analyze"
                     subTitle=" "
                     onFinish={handleLogin}

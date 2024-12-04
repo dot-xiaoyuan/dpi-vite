@@ -3,7 +3,6 @@ import {ProLayout} from '@ant-design/pro-components';
 import {Outlet, useNavigate} from 'react-router-dom';
 import {Dropdown, Menu} from 'antd';
 import {
-    BarChartOutlined,
     DashboardOutlined,
     DeploymentUnitOutlined,
     LogoutOutlined,
@@ -14,6 +13,7 @@ import {
     PushpinOutlined
 } from '@ant-design/icons';
 import {useAuth} from '../context/AuthContext';
+import logo        from '../assets/logo.png';
 
 const MainLayout: React.FC = () => {
     const navigate = useNavigate();
@@ -144,7 +144,7 @@ const MainLayout: React.FC = () => {
             siderWidth={256}
             layout="mix"
             title="DPI Analyze 终端设备识别"
-            logo={<BarChartOutlined />}
+            logo={ <img alt="" src={ logo }/> }
             route={{
                 path: '/',
                 routes: menuItems,
