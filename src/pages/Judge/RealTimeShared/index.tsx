@@ -21,7 +21,7 @@ interface RealtimeProps {
     last_seen: string;
 }
 
-const Realtime: React.FC = () => {
+const RealTimeShared: React.FC = () => {
     // State to manage expanded rows
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
@@ -132,4 +132,4 @@ const Realtime: React.FC = () => {
     );
 }
 
-export default Realtime;
+export default RealTimeShared;

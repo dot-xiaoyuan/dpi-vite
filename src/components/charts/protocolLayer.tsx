@@ -1,4 +1,4 @@
-import { Column } from "@ant-design/charts";
+import { Pie } from "@ant-design/plots";
 import {Empty} from "antd";
 
 const ProtocolLayerChart: React.FC<any> = ({data}) => {
@@ -8,15 +8,11 @@ const ProtocolLayerChart: React.FC<any> = ({data}) => {
     }
     const config = {
         data,
-        xField: 'type',
-        yField: 'value',
-        style: {
-            // 圆角样式
-            radiusTopLeft: 10,
-            radiusTopRight: 10,
-        },
+        angleField: 'value',
+        colorField: 'type',
+        tooltip: { name: '数值', value: 'value', channel: 'y'}
     };
-    return <Column {...config} />;
+    return <Pie {...config} />;
 };
 
 export default ProtocolLayerChart;

@@ -21,7 +21,7 @@ interface ReasonDetail {
     description: string;
 }
 
-const Suspected: React.FC = () => {
+const SuspectedShared: React.FC = () => {
     // State to manage expanded rows
 
     const columns: ProColumns<SuspectedProps>[] = [
@@ -144,4 +144,4 @@ const Suspected: React.FC = () => {
     );
 }
 
-export default Suspected;
+export default SuspectedShared;

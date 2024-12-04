@@ -142,3 +142,7 @@ export const UpdatePolicy = async (
     }
     return await apiClient.post("/policy/update", params);
 }
+
+export const GetFeatureLibrary = async () => {
+    return await apiClient.post("/feature/library");
+}

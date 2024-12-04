@@ -53,19 +53,21 @@ const MainLayout: React.FC = () => {
             ],
         },
         {
-            path: '/feature-determination',
+            path: '/feature-judgment',
             name: '特征判定',
             icon: <PaperClipOutlined />,
             routes: [
                 {
-                    path: '/judge/realtime',
+                    path: '/feature-judgment/real-time-shared',
                     name: '实时共享终端判定',
-                    icon: <CrownFilled />,
                 },
                 {
-                    path: '/judge/doubt',
+                    path: '/feature-judgment/suspected-shared',
                     name: '疑似共享终端判定',
-                    icon: <CrownFilled />,
+                },
+                {
+                    path: '/feature-judgment/feature-library',
+                    name: '特征库更新',
                 },
             ],
         },
@@ -141,7 +143,7 @@ const MainLayout: React.FC = () => {
         <ProLayout
             siderWidth={256}
             layout="mix"
-            title="DPI Analyze"
+            title="DPI Analyze 终端设备识别"
             logo={<BarChartOutlined />}
             route={{
                 path: '/',

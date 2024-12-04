@@ -7,13 +7,14 @@ import Identification from "../pages/Terminal/Identification";
 import Useragent from "../pages/Terminal/Useragent";
 import Application from "../pages/Terminal/Application";
 import IPDetail from "../pages/IPDetail";
-import Realtime from "../pages/Judge/Realtime";
+import RealTimeShared from "../pages/Judge/RealTimeShared";
 import PolicyManagement from "../pages/Policy/Access";
-import Suspected from "../pages/Judge/Suspected";
+import SuspectedShared from "../pages/Judge/SuspectedShared";
 import UserEvents from "../pages/Log/Users";
 import ConfigForm from "../pages/Setting/Config";
 import ChangePassword from "../pages/Setting/ChangePassword";
 import Authorization from "../pages/Setting/Authorization";
+import FeatureLibrary from "../pages/Judge/FeatureLibrary";
 
 // 添加404页面（可选）
 // import NotFound from "../pages/NotFound";  // 你可以自己创建这个页面，或使用默认的 "未找到页面"
@@ -34,8 +35,9 @@ const AppRouter = () => {
                 <Route path="/terminal/useragent" element={<Useragent/>}/>
                 <Route path="/terminal/application" element={<Application/>}/>
                 <Route path="/terminal/ip-detail" element={<IPDetail/>}/>
-                <Route path="/judge/realtime" element={<Realtime/>}/>
-                <Route path="/judge/doubt" element={<Suspected/>}/>
+                <Route path="/feature-judgment/real-time-shared" element={<RealTimeShared/>}/>
+                <Route path="/feature-judgment/suspected-shared" element={<SuspectedShared/>}/>
+                <Route path="/feature-judgment/feature-library" element={<FeatureLibrary/>}/>
                 <Route path="/log/users" element={<UserEvents/>}/>
                 <Route path="/policy/access" element={<PolicyManagement/>}/>
                 <Route path="/setting/config" element={<ConfigForm/>}/>
