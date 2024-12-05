@@ -69,7 +69,13 @@ const FeatureLibrary = () => {
         }
         // 更新特征库
         try {
-            const res = await UpdateFeatureLibrary(params);
+            await UpdateFeatureLibrary(params);
+
+            setFileList([]);
+
+            message.success('更新成功');
+
+            const res = await GetFeatureLibrary();
 
             // 更新日志
             setUpdateLog(res.data.find((item: any) => item.module === selectedValue)?.history || [])
