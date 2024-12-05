@@ -97,6 +97,10 @@ const MainLayout: React.FC = () => {
                     path: '/log/users',
                     name: '用户上下线日志',
                 },
+                {
+                    path: '/log/proxy',
+                    name: '代理检测日志',
+                },
                 // {
                 //     path: '/admin/sub-page2',
                 //     name: '控制策略',

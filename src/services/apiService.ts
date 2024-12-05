@@ -78,13 +78,9 @@ export const TerminalDetail = async (
 
 export const JudgeRealtime = async (
     p?: { pageSize?: number; page?: number },
-    collection?: string,
-    condition?: string,
 ) => {
     const params: Record<string, any> = {
         ...p,
-        ...(collection && {collection}),
-        ...(condition && {condition}), // 仅在 condition 存在时添加
     };
     const response = await apiClient.post("/feature/judge/realtime", params);
     return response.data;
@@ -101,6 +97,20 @@ export const JudgeSuspected = async (
         ...(condition && {condition}), // 仅在 condition 存在时添加
     };
     const response = await apiClient.post("/feature/judge/suspected", params);
+    return response.data;
+}
+
+export const ProxyLog = async (
+    p?: { pageSize?: number; page?: number },
+    collection?: string,
+    condition?: string,
+) => {
+    const params: Record<string, any> = {
+        ...p,
+        ...(collection && {collection}),
+        ...(condition && {condition}), // 仅在 condition 存在时添加
+    };
+    const response = await apiClient.post("/log/proxy", params);
     return response.data;
 }
 
