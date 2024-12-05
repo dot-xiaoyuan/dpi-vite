@@ -221,58 +221,58 @@ const FeatureLibrary = () => {
                     </TabPane>
 
                     {/* 手动维护 */}
-                    <TabPane tab="手动维护" key="3">
-                        <Card
-                            title="特征条目管理"
-                            extra={
-                                <Space>
-                                    <Button icon={<UploadOutlined/>}>批量导入</Button>
-                                    <Button type="primary" icon={<PlusOutlined/>} onClick={() => setModalVisible(true)}>
-                                        添加特征
-                                    </Button>
-                                </Space>
-                            }
-                        >
-                            <Table
-                                dataSource={dataSource}
-                                columns={[
-                                    {
-                                        title: '特征类型',
-                                        dataIndex: 'type',
-                                        key: 'type',
-                                        render: (text) => <Tag color="blue">{text}</Tag>,
-                                    },
-                                    {
-                                        title: '特征值',
-                                        dataIndex: 'value',
-                                        key: 'value',
-                                    },
-                                    {
-                                        title: '数据来源',
-                                        dataIndex: 'source',
-                                        key: 'source',
-                                    },
-                                    {
-                                        title: '更新时间',
-                                        dataIndex: 'updatedAt',
-                                        key: 'updatedAt',
-                                    },
-                                    {
-                                        title: '操作',
-                                        key: 'action',
-                                        render: () => (
-                                            <Space>
-                                                <Button size="small">编辑</Button>
-                                                <Button size="small" danger>
-                                                    删除
-                                                </Button>
-                                            </Space>
-                                        ),
-                                    },
-                                ]}
-                            />
-                        </Card>
-                    </TabPane>
+                    {/*<TabPane tab="手动维护" key="3">*/}
+                    {/*    <Card*/}
+                    {/*        title="特征条目管理"*/}
+                    {/*        extra={*/}
+                    {/*            <Space>*/}
+                    {/*                <Button icon={<UploadOutlined/>}>批量导入</Button>*/}
+                    {/*                <Button type="primary" icon={<PlusOutlined/>} onClick={() => setModalVisible(true)}>*/}
+                    {/*                    添加特征*/}
+                    {/*                </Button>*/}
+                    {/*            </Space>*/}
+                    {/*        }*/}
+                    {/*    >*/}
+                    {/*        <Table*/}
+                    {/*            dataSource={dataSource}*/}
+                    {/*            columns={[*/}
+                    {/*                {*/}
+                    {/*                    title: '特征类型',*/}
+                    {/*                    dataIndex: 'type',*/}
+                    {/*                    key: 'type',*/}
+                    {/*                    render: (text) => <Tag color="blue">{text}</Tag>,*/}
+                    {/*                },*/}
+                    {/*                {*/}
+                    {/*                    title: '特征值',*/}
+                    {/*                    dataIndex: 'value',*/}
+                    {/*                    key: 'value',*/}
+                    {/*                },*/}
+                    {/*                {*/}
+                    {/*                    title: '数据来源',*/}
+                    {/*                    dataIndex: 'source',*/}
+                    {/*                    key: 'source',*/}
+                    {/*                },*/}
+                    {/*                {*/}
+                    {/*                    title: '更新时间',*/}
+                    {/*                    dataIndex: 'updatedAt',*/}
+                    {/*                    key: 'updatedAt',*/}
+                    {/*                },*/}
+                    {/*                {*/}
+                    {/*                    title: '操作',*/}
+                    {/*                    key: 'action',*/}
+                    {/*                    render: () => (*/}
+                    {/*                        <Space>*/}
+                    {/*                            <Button size="small">编辑</Button>*/}
+                    {/*                            <Button size="small" danger>*/}
+                    {/*                                删除*/}
+                    {/*                            </Button>*/}
+                    {/*                        </Space>*/}
+                    {/*                    ),*/}
+                    {/*                },*/}
+                    {/*            ]}*/}
+                    {/*        />*/}
+                    {/*    </Card>*/}
+                    {/*</TabPane>*/}
                 </Tabs>
             </Card>
 
