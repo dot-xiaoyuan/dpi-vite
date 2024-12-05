@@ -167,5 +167,5 @@ export const UploadFeature = async (file: any) => {
 
 // 更新特征库
 export const UpdateFeatureLibrary = async (params:any) => {
-    return await apiClient.post("/feature/library", params);
+    return await apiClient.put("/feature/library", params);
 }

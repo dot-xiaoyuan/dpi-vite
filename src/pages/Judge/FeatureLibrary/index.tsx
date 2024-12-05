@@ -65,7 +65,7 @@ const FeatureLibrary = () => {
         setIsUpdateOpen(false);
         const params = {
             module: selectedValue,
-            path: filePath,
+            filepath: filePath,
         }
         // 更新特征库
         try {
@@ -167,6 +167,7 @@ const FeatureLibrary = () => {
                                         options={featureData.map((item: any) => ({
                                             label: item.name,   // 显示在下拉框中的文本
                                             value: item.module,  // 选中的值
+                                            key: item.module,
                                         }))}
                                         onChange={handleSelectChange}
                                         placeholder="请选择需要更新的特征类型"
@@ -182,6 +183,7 @@ const FeatureLibrary = () => {
                         <Card title="更新日志" style={{marginTop: 16}}>
                             <Table
                                 dataSource={updateLog}
+                                key={selectedValue}
                                 columns={[
                                     {
                                         title: '更新时间',
@@ -192,7 +194,6 @@ const FeatureLibrary = () => {
                                         title: '更新条目数',
                                         dataIndex: 'change_number',
                                         key: 'change_number',
-                                        render: () => '20',
                                     },
                                     // {
                                     //     title: '数据来源',
@@ -200,10 +201,10 @@ const FeatureLibrary = () => {
                                     //     key: 'source',
                                     // },
                                     {
-                                        title: '更新状态',
+                                        title: '类型',
                                         dataIndex: 'type',
                                         key: 'type',
-                                        render: () => <Tag color="success">成功</Tag>,
+                                        render: (value) => <Tag color="success">{value === 'insert' ? '新增' : '更新'}</Tag>,
                                     },
                                 ]}
                             />
