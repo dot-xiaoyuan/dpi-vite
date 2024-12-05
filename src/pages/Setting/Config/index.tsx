@@ -142,12 +142,12 @@ const ConfigForm: React.FC = () => {
             {/* 基础配置 Tab */}
             <TabPane tab="基础配置" key="1">
                 <Row gutter={24}>
-                    <Col span={6}>
+                    <Col span={8}>
                         <Card>
                             <Form
                                 layout="horizontal"
-                                labelCol={{span: 6}}
-                                wrapperCol={{span: 10, offset: 12}}
+                                labelCol={{ style: { width: 120 } }}
+                                wrapperCol={{span: 6, offset: 10}}
                                 style={{maxWidth: 600}}
                                 initialValues={config}
                                 onFinish={onFinish}
