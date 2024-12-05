@@ -36,6 +36,7 @@ const FeatureLibrary = () => {
     const [featureData, setFeatureData] = useState([]);
     const [fileList, setFileList] = useState([]);
     const [filePath, setFilePath] = useState(undefined);
+    const [updateLog, setUpdateLog] = useState(undefined);
     const [form] = Form.useForm();
     const [] = useState(false);
 
@@ -50,12 +51,12 @@ const FeatureLibrary = () => {
     // 选择特征类型
     const handleSelectChange = (value: any) => {
         setSelectedValue(value);
+        setUpdateLog(featureData.find((item: any) => item.module === value)?.history || [])
     };
 
     // 更新特征
     const updateFeature = () => {
-        // 判断是否选择特征类型
-        if (!selectedValue) return message.error('请选择需要更新的特征类型');
+        // 打开弹窗
         setIsUpdateOpen(true);
     };
 
@@ -68,10 +69,10 @@ const FeatureLibrary = () => {
         }
         // 更新特征库
         try {
-            const result = await UpdateFeatureLibrary(params);
+            const res = await UpdateFeatureLibrary(params);
 
             // 更新日志
-            // TODO 更新日志赋值
+            setUpdateLog(res.data.find((item: any) => item.module === selectedValue)?.history || [])
 
         } catch (error) {
             message.error('更新失败，请重试！');
@@ -118,6 +119,8 @@ const FeatureLibrary = () => {
     useEffect(() => {
         GetFeatureLibrary().then((res) => {
             setFeatureData(res.data);
+            setSelectedValue(res.data.length > 0 ? res.data[0].module : '');
+            setUpdateLog(res.data.length > 0 ? res.data[0].history : [])
         })
     }, []);
     return (
@@ -160,7 +163,7 @@ const FeatureLibrary = () => {
                             <Space>
                                 <Select
                                         style={{ width: 250 }}
-                                        allowClear
+                                        defaultValue={featureData.length > 0 ? featureData[0].module : ''}
                                         options={featureData.map((item: any) => ({
                                             label: item.name,   // 显示在下拉框中的文本
                                             value: item.module,  // 选中的值
@@ -178,28 +181,28 @@ const FeatureLibrary = () => {
                         </Space>
                         <Card title="更新日志" style={{marginTop: 16}}>
                             <Table
-                                dataSource={dataSource}
+                                dataSource={updateLog}
                                 columns={[
                                     {
                                         title: '更新时间',
-                                        dataIndex: 'updatedAt',
-                                        key: 'updatedAt',
+                                        dataIndex: 'timestamp',
+                                        key: 'timestamp',
                                     },
                                     {
                                         title: '更新条目数',
-                                        dataIndex: 'count',
-                                        key: 'count',
+                                        dataIndex: 'change_number',
+                                        key: 'change_number',
                                         render: () => '20',
                                     },
-                                    {
-                                        title: '数据来源',
-                                        dataIndex: 'source',
-                                        key: 'source',
-                                    },
+                                    // {
+                                    //     title: '数据来源',
+                                    //     dataIndex: 'source',
+                                    //     key: 'source',
+                                    // },
                                     {
                                         title: '更新状态',
-                                        dataIndex: 'status',
-                                        key: 'status',
+                                        dataIndex: 'type',
+                                        key: 'type',
                                         render: () => <Tag color="success">成功</Tag>,
                                     },
                                 ]}
