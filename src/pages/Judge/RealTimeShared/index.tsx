@@ -1,73 +1,47 @@
-import React, {useState} from "react";
+import React from "react";
 import {JudgeRealtime} from "../../../services/apiService.ts";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {Card, Badge, Tag} from "antd";
-import dayjs from "dayjs";
-import {DeviceRecord} from "../../../types/terminal.ts";
-import {createFromIconfontCN} from "@ant-design/icons";
-
-const IconFont = createFromIconfontCN({
-    scriptUrl: "//at.alicdn.com/t/c/font_4731706_z3gdtn2vd7f.js",
-});
+import { Link } from "react-router-dom";
 
 interface RealtimeProps {
-    _id: string;
     ip: string;
     username: string;
-    devices: DeviceRecord[] | null;
-    all_count: number;
-    mobile_count: number;
-    pc_count: number;
     last_seen: string;
 }
 
 const RealTimeShared: React.FC = () => {
-    // State to manage expanded rows
-    const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
     const columns: ProColumns<RealtimeProps>[] = [
         {title: "集合时间", dataIndex: "collection", valueType: 'dateMonth', width: 100, hideInTable: true},
         {title: "IP", dataIndex: "ip"},
         {title: "用户名", dataIndex: "username"},
         {
-            title: "设备总数", dataIndex: "all_count", search: false, render: (_, record) => {
-                return <Badge count={record.all_count ? record.all_count : 0} showZero></Badge>
-            }
+            title: "最后更新时间",
+            dataIndex: "last_seen",
+            key: "last_seen",
+            valueType: "dateTime",
+            render: (_, record) => {
+                const timestamp = Number(record.last_seen); // 确保是数字类型
+                const date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp); // 秒级转换为毫秒
+                return date.toLocaleString(); // 根据本地时间格式化时间
+            },
+            search: false,
         },
         {
-            title: "Mobile Count", dataIndex: "mobile_count", search: false, render: (_, record) => {
-                return <Badge count={record.mobile_count ? record.mobile_count : 0} showZero color="geekblue"></Badge>
-            }
-        },
-        {
-            title: "PC Count", dataIndex: "pc_count", search: false, render: (_, record) => {
-                return <Badge count={record.pc_count ? record.pc_count : 0} showZero color="gold"></Badge>
-            }
-        },
-        {title: "记录时间", dataIndex: "last_seen", valueType: "dateTime", search: false},
-    ];
-
-    const deviceColumns: ProColumns<DeviceRecord>[] = [
-        {title: "系统", dataIndex: "os", key: "os"},
-        {title: "版本", dataIndex: "version", key: "version"},
-        {title: "设备", dataIndex: "device", key: "device"},
-        {title: "品牌", dataIndex: "brand", key: "brand", render: (_, record) => {
-            return <Tag bordered={false}>{record.brand}</Tag>
-            }},
-        {title: "型号", dataIndex: "model", key: "model"},
-        {
-            title: "Icon",
-            dataIndex: "icon",
-            key: "icon",
-            render: (_, record) =>
-                record.icon ? (
-                    <IconFont
-                        type={record.icon || "default-icon"}
-                        style={{fontSize: "24px", marginRight: "8px"}}
-                    />
-                ) : (
-                    "N/A"
-                ),
+            title: "操作",
+            key: "operation",
+            fixed: "right",
+            search: false,
+            render: (_, record) => (
+                <Link
+                    to={{
+                        pathname: "/terminal/ip-detail",
+                    }}
+                    state={{ip: record.ip}}
+                >
+                    详情
+                </Link>
+            ),
         },
     ];
 
@@ -75,9 +49,6 @@ const RealTimeShared: React.FC = () => {
         params: Record<string, any>,
     ): Promise<{ data: RealtimeProps[]; success: boolean; total: number }> => {
         const conditions: Record<string, any> = {};
-        if (!params.collection) {
-            params.collection = dayjs();
-        }
         if (params.ip) {
             conditions.ip = params.ip;
         }
@@ -92,9 +63,7 @@ const RealTimeShared: React.FC = () => {
             condition: conditionString,
         };
 
-        const collection = dayjs(params.collection).format("YY_MM");
-
-        const res = await JudgeRealtime(requestParams, collection, conditionString);
+        const res = await JudgeRealtime(requestParams);
         return {
             data: res.result || [],
             success: true,
@@ -103,32 +72,17 @@ const RealTimeShared: React.FC = () => {
     };
 
     return (
-        <Card>
-            <ProTable<RealtimeProps>
-                columns={columns}
-                request={fetchData}
-                rowKey="_id"
-                pagination={{
-                    showSizeChanger: true,
-                    defaultPageSize: 10,
-                }}
-                expandable={{
-                    expandedRowKeys, // Controlled expanded keys
-                    onExpandedRowsChange: (keys) => setExpandedRowKeys(keys as string[]), // Update state on change
-                    expandedRowRender: (record) => (
-                        <ProTable<DeviceRecord>
-                            columns={deviceColumns}
-                            dataSource={record.devices || []}
-                            rowKey={(row) => `${record.ip}-${row.device}`} // Ensure unique keys
-                            pagination={false}
-                            search={false}
-                            toolBarRender={false}
-                        />
-                    ),
-                }}
-                search={{filterType: "light"}}
-            />
-        </Card>
+        <ProTable<RealtimeProps>
+            columns={columns}
+            request={fetchData}
+            rowKey="ip"
+            pagination={{
+                showSizeChanger: true,
+                defaultPageSize: 20,
+            }}
+            search={false}
+            scroll={{x: "max-content"}}
+        />
     );
 }
 
