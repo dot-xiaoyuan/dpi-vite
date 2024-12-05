@@ -69,17 +69,20 @@ const FeatureLibrary = () => {
         }
         // 更新特征库
         try {
-            await UpdateFeatureLibrary(params);
+            const response: any = await UpdateFeatureLibrary(params);
 
-            setFileList([]);
+            if (response.code === 200) {
+                setFileList([]);
 
-            message.success('更新成功');
+                message.success('更新成功');
 
-            const res = await GetFeatureLibrary();
+                const res = await GetFeatureLibrary();
 
-            // 更新日志
-            setUpdateLog(res.data.find((item: any) => item.module === selectedValue)?.history || [])
-
+                // 更新日志
+                setUpdateLog(res.data.find((item: any) => item.module === selectedValue)?.history || [])
+            } else {
+                message.error(response.message);
+            }
         } catch (error) {
             message.error('更新失败，请重试！');
         }
