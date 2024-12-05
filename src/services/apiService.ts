@@ -143,6 +143,19 @@ export const UpdatePolicy = async (
     return await apiClient.post("/policy/update", params);
 }
 
+// 特征概览
 export const GetFeatureLibrary = async () => {
     return await apiClient.post("/feature/library");
+}
+
+// 上传特征更新
+export const UploadFeature = async (file: any) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return await apiClient.post("/upload", formData);
+}
+
+// 更新特征库
+export const UpdateFeatureLibrary = async (params:any) => {
+    return await apiClient.post("/feature/library", params);
 }

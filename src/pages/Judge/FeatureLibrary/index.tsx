@@ -1,11 +1,14 @@
-import {useEffect, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-components';
-import {Button, Card, Form, Input, message, Modal, Select, Space, Table, Tabs, Tag} from 'antd';
-import {PlusOutlined, UploadOutlined} from '@ant-design/icons';
-import {GetFeatureLibrary, JudgeRealtime} from "../../../services/apiService.ts";
-import {dashboard} from "../../../services/authService.ts";
+import React, {useEffect, useState} from 'react';
+import {PageContainer, ProCard} from '@ant-design/pro-components';
+import {Button, Card, Form, Input, message, Modal, Select, Space, Table, Tabs, Tag, Statistic, Badge, Upload} from 'antd';
+import type { UploadProps } from 'antd';
+import {PlusOutlined, UploadOutlined, RedoOutlined}               from '@ant-design/icons';
+import { GetFeatureLibrary, UpdateFeatureLibrary, UploadFeature } from "../../../services/apiService.ts";
+import './index.css';
+
 
 const {TabPane} = Tabs;
+const {Divider} = ProCard;
 
 // 模拟数据
 const dataSource = [
@@ -27,7 +30,14 @@ const dataSource = [
 
 const FeatureLibrary = () => {
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+    const [responsive] = useState(false);
+    const [selectedValue, setSelectedValue] = useState(undefined);
+    const [featureData, setFeatureData] = useState([]);
+    const [fileList, setFileList] = useState([]);
+    const [filePath, setFilePath] = useState(undefined);
     const [form] = Form.useForm();
+    const [] = useState(false);
 
     // 添加特征条目
     const handleAddFeature = () => {
@@ -37,37 +47,135 @@ const FeatureLibrary = () => {
         });
     };
 
+    // 选择特征类型
+    const handleSelectChange = (value: any) => {
+        setSelectedValue(value);
+    };
+
+    // 更新特征
+    const updateFeature = () => {
+        // 判断是否选择特征类型
+        if (!selectedValue) return message.error('请选择需要更新的特征类型');
+        setIsUpdateOpen(true);
+    };
+
+    // 确认上传
+    const updateOk = async () => {
+        setIsUpdateOpen(false);
+        const params = {
+            module: selectedValue,
+            path: filePath,
+        }
+        // 更新特征库
+        try {
+            const result = await UpdateFeatureLibrary(params);
+
+            // 更新日志
+            // TODO 更新日志赋值
+
+        } catch (error) {
+            message.error('更新失败，请重试！');
+        }
+    };
+
+    // 取消上传
+    const updateCancel = () => {
+        setIsUpdateOpen(false);
+        setFileList([]);
+    };
+
+    // 特征更新-上传文件
+    const uploadProps: UploadProps = {
+        name: 'file',
+        maxCount: 1,
+        fileList,
+        customRequest: async ({ file, onSuccess, onError }: any) => {
+            try {
+                const result = await UploadFeature(file);
+
+                setFilePath(result.data);
+
+                onSuccess(result);
+            } catch (error) {
+                onError(error);
+            }
+        },
+
+        onChange(info) {
+            // @ts-ignore
+            setFileList(info.fileList);
+            if (info.file.status !== 'uploading') {
+                console.log(info.file, info.fileList);
+            }
+            if (info.file.status === 'done') {
+                message.success(`${info.file.name} 上传成功`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} 上传失败`);
+            }
+        },
+    };
+
     useEffect(() => {
         GetFeatureLibrary().then((res) => {
-
+            setFeatureData(res.data);
         })
     }, []);
     return (
-        <PageContainer title="特征库更新管理" subTitle="维护终端指纹特征库">
+        <PageContainer
+            title="特征库更新管理"
+            subTitle="维护终端指纹特征库"
+            header={{
+                breadcrumb: {},
+            }}>
             <Card>
                 <Tabs defaultActiveKey="1">
                     {/* 特征库总览 */}
                     <TabPane tab="特征库总览" key="1">
                         <Card title="特征统计">
-                            <Space>
-                                <div>
-                                    <h3>特征类型分布</h3>
-                                    <Tag color="blue">UA特征: 120</Tag>
-                                    <Tag color="green">MAC特征: 80</Tag>
-                                    <Tag color="orange">协议特征: 40</Tag>
-                                </div>
-                            </Space>
+                            <h3>特征类型分布</h3>
+                            <ProCard.Group direction="row">
+                                {featureData?.length > 0 ? (
+                                    featureData.map((item:any, index) => (
+                                        <React.Fragment key={index}>
+                                            <ProCard style={{width: 200, display: 'inline-block'}} className="custom-card">
+                                                <Statistic title={<span>{item.name} <Badge count={item.version} style={{ marginLeft: 8, display: "block", backgroundColor: '#1677FF' }} /></span>}
+                                                           value={item.count}
+                                                           style={{width: 200}} />
+                                            </ProCard>
+                                            {index < featureData.length - 1 && (
+                                                <Divider type={responsive ? 'horizontal' : 'vertical'} style={{display: 'inline-block'}} />
+                                            )}
+                                        </React.Fragment>
+                                    ))
+                                ) : (
+                                    <ProCard>Loading...</ProCard>
+                                )}
+                            </ProCard.Group>
                         </Card>
                     </TabPane>
 
                     {/* 特征更新管理 */}
                     <TabPane tab="特征更新管理" key="2">
-                        <Card title="自动更新设置" extra={<Button type="primary">立即更新</Button>}>
-                            <Space direction="vertical">
-                                <div>数据源：厂商数据库、社区贡献库</div>
-                                <div>更新频率：每日自动更新</div>
+                        <Space style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                            <Space>
+                                <Select
+                                        style={{ width: 250 }}
+                                        allowClear
+                                        options={featureData.map((item: any) => ({
+                                            label: item.name,   // 显示在下拉框中的文本
+                                            value: item.module,  // 选中的值
+                                        }))}
+                                        onChange={handleSelectChange}
+                                        placeholder="请选择需要更新的特征类型"
+                                    />
+                                <Button icon={<RedoOutlined />} onClick={updateFeature}>更新</Button>
                             </Space>
-                        </Card>
+                            <Modal title="上传特征库更新文件" centered open={isUpdateOpen} onOk={updateOk} onCancel={updateCancel}>
+                                <Upload {...uploadProps}>
+                                    <Button icon={<UploadOutlined />}>上传</Button>
+                                </Upload>
+                            </Modal>
+                        </Space>
                         <Card title="更新日志" style={{marginTop: 16}}>
                             <Table
                                 dataSource={dataSource}
