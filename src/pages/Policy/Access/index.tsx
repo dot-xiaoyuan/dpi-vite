@@ -109,17 +109,15 @@ export default () => {
     const handleUpdate = async (rowKey: any, data: any, row: any) => {
         console.log(rowKey, data, row);
         try {
-            const res = await UpdatePolicy({
+            const res: any = await UpdatePolicy({
                 all: data.all,
                 products_id: rowKey,
                 pc: data.pc,
                 mobile: data.mobile
             });
-            // @ts-ignore
             if (res.code == 0) {
                 message.success("编辑成功");
             } else {
-                // @ts-ignore
                 message.error(res.message);
             }
             fetchData()

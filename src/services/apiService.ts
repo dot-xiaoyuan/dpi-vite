@@ -169,3 +169,13 @@ export const UploadFeature = async (file: any) => {
 export const UpdateFeatureLibrary = async (params:any) => {
     return await apiClient.put("/feature/library", params);
 }
+
+// 获取授权信息
+export const GetLicense = async () => {
+    return await apiClient.get("/license");
+}
+
+// 更新授权信息
+export const UpdateLicense = async (code: string) => {
+    return await apiClient.put("/license", code);
+}
