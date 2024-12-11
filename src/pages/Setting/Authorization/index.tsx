@@ -82,7 +82,7 @@ const Authorization: React.FC = () => {
                     <Col span={16}>
                         <div style={ { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', height: '100%' } }>
                             <label style={{ marginBottom: '8px' }}>请联系工作人员扫码二维码获取 License</label>
-                            <img alt="Scan me!" src={config?.qrcode} />
+                            <img alt="Scan me!" src={config?.qrcode} style={{ width: 200 }} />
                         </div>
                     </Col>
                 </Row>
