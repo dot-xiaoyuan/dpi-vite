@@ -1,39 +1,44 @@
 import React, {useEffect, useState} from 'react';
 import {PageContainer, ProCard} from '@ant-design/pro-components';
-import {Button, Card, Form, Input, message, Modal, Select, Space, Table, Tabs, Tag, Statistic, Badge, Upload} from 'antd';
-import type { UploadProps } from 'antd';
-import {PlusOutlined, UploadOutlined, RedoOutlined}               from '@ant-design/icons';
-import { GetFeatureLibrary, UpdateFeatureLibrary, UploadFeature } from "../../../services/apiService.ts";
+import type {UploadProps} from 'antd';
+import {
+    Badge,
+    Button,
+    Card,
+    Form,
+    Input,
+    message,
+    Modal,
+    Select,
+    Space,
+    Statistic,
+    Table,
+    Tabs,
+    Tag,
+    Upload
+} from 'antd';
+import {RedoOutlined, UploadOutlined} from '@ant-design/icons';
+import {GetFeatureLibrary, UpdateFeatureLibrary, UploadFeature} from "../../../services/apiService.ts";
 import './index.css';
 
 
 const {TabPane} = Tabs;
 const {Divider} = ProCard;
 
-// 模拟数据
-const dataSource = [
-    {
-        key: '1',
-        type: 'UA特征',
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        source: '系统自动',
-        updatedAt: '2024-01-01 12:00',
-    },
-    {
-        key: '2',
-        type: 'MAC特征',
-        value: '00:1A:79:XX:XX:XX',
-        source: '管理员手动',
-        updatedAt: '2024-01-02 15:00',
-    },
-];
+type LibraryProps = {
+    name: string
+    module: string
+    count: number
+    version: string
+    history: any
+};
 
 const FeatureLibrary = () => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [responsive] = useState(false);
     const [selectedValue, setSelectedValue] = useState(undefined);
-    const [featureData, setFeatureData] = useState([]);
+    const [featureData, setFeatureData] = useState<LibraryProps[]>([]);
     const [fileList, setFileList] = useState([]);
     const [filePath, setFilePath] = useState(undefined);
     const [updateLog, setUpdateLog] = useState(undefined);
@@ -69,17 +74,20 @@ const FeatureLibrary = () => {
         }
         // 更新特征库
         try {
-            await UpdateFeatureLibrary(params);
+            const response: any = await UpdateFeatureLibrary(params);
 
-            setFileList([]);
+            if (response.code === 200) {
+                setFileList([]);
 
-            message.success('更新成功');
+                message.success('更新成功');
 
-            const res = await GetFeatureLibrary();
+                const res = await GetFeatureLibrary();
 
-            // 更新日志
-            setUpdateLog(res.data.find((item: any) => item.module === selectedValue)?.history || [])
-
+                // 更新日志
+                setUpdateLog(res.data.find((item: any) => item.module === selectedValue)?.history || [])
+            } else {
+                message.error(response.message);
+            }
         } catch (error) {
             message.error('更新失败，请重试！');
         }
@@ -96,7 +104,7 @@ const FeatureLibrary = () => {
         name: 'file',
         maxCount: 1,
         fileList,
-        customRequest: async ({ file, onSuccess, onError }: any) => {
+        customRequest: async ({file, onSuccess, onError}: any) => {
             try {
                 const result = await UploadFeature(file);
 
@@ -144,15 +152,21 @@ const FeatureLibrary = () => {
                             <h3>特征类型分布</h3>
                             <ProCard.Group direction="row">
                                 {featureData?.length > 0 ? (
-                                    featureData.map((item:any, index) => (
+                                    featureData.map((item: any, index) => (
                                         <React.Fragment key={index}>
-                                            <ProCard style={{width: 200, display: 'inline-block'}} className="custom-card">
-                                                <Statistic title={<span>{item.name} <Badge count={item.version} style={{ marginLeft: 8, display: "block", backgroundColor: '#1677FF' }} /></span>}
+                                            <ProCard style={{width: 200, display: 'inline-block'}}
+                                                     className="custom-card">
+                                                <Statistic title={<span>{item.name} <Badge count={item.version} style={{
+                                                    marginLeft: 8,
+                                                    display: "block",
+                                                    backgroundColor: '#1677FF'
+                                                }}/></span>}
                                                            value={item.count}
-                                                           style={{width: 200}} />
+                                                           style={{width: 200}}/>
                                             </ProCard>
                                             {index < featureData.length - 1 && (
-                                                <Divider type={responsive ? 'horizontal' : 'vertical'} style={{display: 'inline-block'}} />
+                                                <Divider type={responsive ? 'horizontal' : 'vertical'}
+                                                         style={{display: 'inline-block'}}/>
                                             )}
                                         </React.Fragment>
                                     ))
@@ -165,24 +179,25 @@ const FeatureLibrary = () => {
 
                     {/* 特征更新管理 */}
                     <TabPane tab="特征更新管理" key="2">
-                        <Space style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                        <Space style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
                             <Space>
                                 <Select
-                                        style={{ width: 250 }}
-                                        defaultValue={featureData.length > 0 ? featureData[0].module : ''}
-                                        options={featureData.map((item: any) => ({
-                                            label: item.name,   // 显示在下拉框中的文本
-                                            value: item.module,  // 选中的值
-                                            key: item.module,
-                                        }))}
-                                        onChange={handleSelectChange}
-                                        placeholder="请选择需要更新的特征类型"
-                                    />
-                                <Button icon={<RedoOutlined />} onClick={updateFeature}>更新</Button>
+                                    style={{width: 250}}
+                                    defaultValue={featureData.length > 0 ? featureData[0].module : ''}
+                                    options={featureData.map((item: any) => ({
+                                        label: item.name,   // 显示在下拉框中的文本
+                                        value: item.module,  // 选中的值
+                                        key: item.module,
+                                    }))}
+                                    onChange={handleSelectChange}
+                                    placeholder="请选择需要更新的特征类型"
+                                />
+                                <Button icon={<RedoOutlined/>} onClick={updateFeature}>更新</Button>
                             </Space>
-                            <Modal title="上传特征库更新文件" centered open={isUpdateOpen} onOk={updateOk} onCancel={updateCancel}>
+                            <Modal title="上传特征库更新文件" centered open={isUpdateOpen} onOk={updateOk}
+                                   onCancel={updateCancel}>
                                 <Upload {...uploadProps}>
-                                    <Button icon={<UploadOutlined />}>上传</Button>
+                                    <Button icon={<UploadOutlined/>}>上传</Button>
                                 </Upload>
                             </Modal>
                         </Space>
@@ -210,7 +225,8 @@ const FeatureLibrary = () => {
                                         title: '类型',
                                         dataIndex: 'type',
                                         key: 'type',
-                                        render: (value) => <Tag color="success">{value === 'insert' ? '新增' : '更新'}</Tag>,
+                                        render: (value) => <Tag
+                                            color="success">{value === 'insert' ? '新增' : '更新'}</Tag>,
                                     },
                                 ]}
                             />
@@ -218,58 +234,58 @@ const FeatureLibrary = () => {
                     </TabPane>
 
                     {/* 手动维护 */}
-                    <TabPane tab="手动维护" key="3">
-                        <Card
-                            title="特征条目管理"
-                            extra={
-                                <Space>
-                                    <Button icon={<UploadOutlined/>}>批量导入</Button>
-                                    <Button type="primary" icon={<PlusOutlined/>} onClick={() => setModalVisible(true)}>
-                                        添加特征
-                                    </Button>
-                                </Space>
-                            }
-                        >
-                            <Table
-                                dataSource={dataSource}
-                                columns={[
-                                    {
-                                        title: '特征类型',
-                                        dataIndex: 'type',
-                                        key: 'type',
-                                        render: (text) => <Tag color="blue">{text}</Tag>,
-                                    },
-                                    {
-                                        title: '特征值',
-                                        dataIndex: 'value',
-                                        key: 'value',
-                                    },
-                                    {
-                                        title: '数据来源',
-                                        dataIndex: 'source',
-                                        key: 'source',
-                                    },
-                                    {
-                                        title: '更新时间',
-                                        dataIndex: 'updatedAt',
-                                        key: 'updatedAt',
-                                    },
-                                    {
-                                        title: '操作',
-                                        key: 'action',
-                                        render: () => (
-                                            <Space>
-                                                <Button size="small">编辑</Button>
-                                                <Button size="small" danger>
-                                                    删除
-                                                </Button>
-                                            </Space>
-                                        ),
-                                    },
-                                ]}
-                            />
-                        </Card>
-                    </TabPane>
+                    {/*<TabPane tab="手动维护" key="3">*/}
+                    {/*    <Card*/}
+                    {/*        title="特征条目管理"*/}
+                    {/*        extra={*/}
+                    {/*            <Space>*/}
+                    {/*                <Button icon={<UploadOutlined/>}>批量导入</Button>*/}
+                    {/*                <Button type="primary" icon={<PlusOutlined/>} onClick={() => setModalVisible(true)}>*/}
+                    {/*                    添加特征*/}
+                    {/*                </Button>*/}
+                    {/*            </Space>*/}
+                    {/*        }*/}
+                    {/*    >*/}
+                    {/*        <Table*/}
+                    {/*            dataSource={dataSource}*/}
+                    {/*            columns={[*/}
+                    {/*                {*/}
+                    {/*                    title: '特征类型',*/}
+                    {/*                    dataIndex: 'type',*/}
+                    {/*                    key: 'type',*/}
+                    {/*                    render: (text) => <Tag color="blue">{text}</Tag>,*/}
+                    {/*                },*/}
+                    {/*                {*/}
+                    {/*                    title: '特征值',*/}
+                    {/*                    dataIndex: 'value',*/}
+                    {/*                    key: 'value',*/}
+                    {/*                },*/}
+                    {/*                {*/}
+                    {/*                    title: '数据来源',*/}
+                    {/*                    dataIndex: 'source',*/}
+                    {/*                    key: 'source',*/}
+                    {/*                },*/}
+                    {/*                {*/}
+                    {/*                    title: '更新时间',*/}
+                    {/*                    dataIndex: 'updatedAt',*/}
+                    {/*                    key: 'updatedAt',*/}
+                    {/*                },*/}
+                    {/*                {*/}
+                    {/*                    title: '操作',*/}
+                    {/*                    key: 'action',*/}
+                    {/*                    render: () => (*/}
+                    {/*                        <Space>*/}
+                    {/*                            <Button size="small">编辑</Button>*/}
+                    {/*                            <Button size="small" danger>*/}
+                    {/*                                删除*/}
+                    {/*                            </Button>*/}
+                    {/*                        </Space>*/}
+                    {/*                    ),*/}
+                    {/*                },*/}
+                    {/*            ]}*/}
+                    {/*        />*/}
+                    {/*    </Card>*/}
+                    {/*</TabPane>*/}
                 </Tabs>
             </Card>
 
