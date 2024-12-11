@@ -49,9 +49,9 @@ const Authorization: React.FC = () => {
             >
                 {/* 系统版本 */}
                 <Row gutter={24} style={{ marginBottom: "20px" }}>
-                    <Col span={16}>
-                        <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                            <label>系统版本：</label>
+                    <Col span={20}>
+                        <div style={{textAlign: "left"}}>
+                            <label style={{display: "inline-block", width: 70}}>系统版本：</label>
                             <span>{config?.version || '-'}</span>
                         </div>
                     </Col>
@@ -59,9 +59,9 @@ const Authorization: React.FC = () => {
 
                 {/* 机器码 */}
                 <Row gutter={24} style={{ marginBottom: "20px" }}>
-                    <Col span={16}>
-                        <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                            <label>机器码：</label>
+                    <Col span={20}>
+                        <div style={{textAlign: "left"}}>
+                            <label style={{display: "inline-block", width: 70}}>机器码：</label>
                             <span>{config?.machine_id || '-'}</span>
                         </div>
                     </Col>
@@ -69,9 +69,9 @@ const Authorization: React.FC = () => {
 
                 {/* 到期时间 */}
                 <Row gutter={24} style={{ marginBottom: "20px" }}>
-                    <Col span={16}>
-                        <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                            <label>到期时间：</label>
+                    <Col span={20}>
+                        <div style={{textAlign: "left"}}>
+                            <label style={{display: "inline-block", width: 70}}>到期时间：</label>
                             <span>{config?.expire_date || '-'}</span>
                         </div>
                     </Col>
@@ -79,7 +79,7 @@ const Authorization: React.FC = () => {
 
                 {/* 二维码 */}
                 <Row gutter={24} style={{ marginBottom: "20px" }}>
-                    <Col span={16}>
+                    <Col span={20}>
                         <div style={ { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', height: '100%' } }>
                             <label style={{ marginBottom: '8px' }}>请联系工作人员扫码二维码获取 License</label>
                             <img alt="Scan me!" src={config?.qrcode} style={{ width: 200 }} />
