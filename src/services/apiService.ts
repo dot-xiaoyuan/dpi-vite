@@ -176,6 +176,6 @@ export const GetLicense = async () => {
 }
 
 // 更新授权信息
-export const UpdateLicense = async (code: string) => {
-    return await apiClient.put("/license", code);
+export const UpdateLicense = async (license_code: string) => {
+    return await apiClient.put("/license", license_code);
 }
