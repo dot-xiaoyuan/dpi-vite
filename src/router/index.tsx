@@ -16,6 +16,7 @@ import ChangePassword from "../pages/Setting/ChangePassword";
 import Authorization from "../pages/Setting/Authorization";
 import FeatureLibrary from "../pages/Judge/FeatureLibrary";
 import ProxyRecord from "../pages/Log/Proxy";
+import ActiveIPList from "../pages/Terminal/Active";
 
 // 添加404页面（可选）
 // import NotFound from "../pages/NotFound";  // 你可以自己创建这个页面，或使用默认的 "未找到页面"
@@ -32,6 +33,7 @@ const AppRouter = () => {
             <Route element={<MainLayout/>}>
                 <Route path="/" element={<Navigate to="/dashboard" replace/>}/>
                 <Route path="/dashboard" element={<Dashboard/>}/>
+                <Route path="/terminal/active" element={<ActiveIPList/>}/>
                 <Route path="/terminal/identification" element={<Identification/>}/>
                 <Route path="/terminal/useragent" element={<Useragent/>}/>
                 <Route path="/terminal/application" element={<Application/>}/>

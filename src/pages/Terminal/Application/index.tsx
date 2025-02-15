@@ -29,7 +29,10 @@ interface Sessions {
 }
 
 const Application: React.FC = () => {
+    const [lastID, setLastID] = React.useState<string>("");
     const columns: ProColumns<Sessions>[] = [
+        {title: "过滤sni", dataIndex: "sni", valueType: "switch", hideInTable: true},
+        {title: "过滤http", dataIndex: "http", valueType: "switch", hideInTable: true},
         {title: "集合时间", dataIndex: "collection", valueType:'dateTime', width: 100, hideInTable: true},
         {title: "会话ID", dataIndex: "session_id", width: 200, search: false},
         {title: "源IP", dataIndex: "src_ip", width: 150},
@@ -81,6 +84,12 @@ const Application: React.FC = () => {
             params.collection = dayjs();
         }
         // 动态构造条件：根据搜索表单的值
+        if (params.sni) {
+            conditions["metadata.tls_info.sni"] = {$ne:null};
+        }
+        if (params.http) {
+            conditions["metadata.http_info.host"] = {$ne:null};
+        }
         if (params.src_ip) {
             conditions.src_ip = params.src_ip;
         }
@@ -99,11 +108,15 @@ const Application: React.FC = () => {
             page: params.current,
             pageSize: params.pageSize,
             condition: conditionString,
+            lastID : lastID
         };
 
         const collection = "stream-" + dayjs(params.collection).format("YY-MM-DD-HH"); // 你可以根据需要动态设置
 
         const res = await TerminalApplication(requestParams, collection, conditionString);
+        if (res.result) {
+            setLastID(res.result[res.result.length -1]._id);
+        }
         return {
             data: res.result || [],
             success: true,
@@ -116,7 +129,7 @@ const Application: React.FC = () => {
             <ProTable<Sessions>
                 columns={columns}
                 request={fetchData}
-                rowKey="id"
+                rowKey="_id"
                 pagination={{
                     showSizeChanger: true,
                     defaultPageSize: 10,

@@ -5,7 +5,7 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import './index.css';
 import {login} from "../../services/authService.ts";
 import {useNavigate} from "react-router-dom";
-import logo          from '../../assets/logo.png';
+import logo from '../../assets/srun.svg';
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
         <ProConfigProvider hashed={false}>
             <div>
                 <LoginForm
-                    logo={ <img alt="" src={ logo }/> }
+                    logo={<img alt="" src={logo}/>}
                     title="DPI-Analyze"
                     subTitle=" "
                     onFinish={handleLogin}

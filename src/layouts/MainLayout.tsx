@@ -13,7 +13,7 @@ import {
     PushpinOutlined
 } from '@ant-design/icons';
 import {useAuth} from '../context/AuthContext';
-import logo        from '../assets/logo.png';
+import logo        from '../assets/srun.svg';
 
 const MainLayout: React.FC = () => {
     const navigate = useNavigate();
@@ -35,6 +35,11 @@ const MainLayout: React.FC = () => {
             name: '终端识别',
             icon: <DeploymentUnitOutlined/>,
             routes: [
+                {
+                    path: '/terminal/active',
+                    name: '活跃设备观测',
+                    icon: <PushpinOutlined />,
+                },
                 {
                     path: '/terminal/identification',
                     name: '终端类型识别',

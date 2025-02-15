@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
 import {Badge, Space, Tag, Tooltip} from "antd";
 import {TerminalIdentification} from "../../../services/apiService.ts";
@@ -16,6 +16,8 @@ interface DataType {
     user_agent: string;
     mac: string;
     device: string | null;
+    device_name: string | null;
+    device_type: string | null;
     all: string | null;
     mobile: string | null;
     pc: string | null;
@@ -23,32 +25,34 @@ interface DataType {
 }
 
 const Identification: React.FC = () => {
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
-    const fetchData = async (params: {
-        current?: number;
-        pageSize?: number;
-        sortField?: string;
-        sortOrder?: string;
-    }) => {
-        setLoading(true);
-        try {
-            const {current = 1, pageSize = 15, sortField, sortOrder} = params;
-            const response = await TerminalIdentification(current, pageSize, sortField, sortOrder);
-            return {
-                data: response.results,
-                success: true,
-                total: response.totalCount,
-            };
-        } catch (error) {
-            return {
-                data: [],
-                success: false,
-                total: 0,
-            }
-        } finally {
-            setLoading(false);
+    const fetchData = async (
+        params: Record<string, any>,
+    ): Promise<{ data: DataType[]; success: boolean; total: number }> => {
+        // setLoading(true);
+        // 构造查询条件
+        const conditions: Record<string, any> = {};
+        // 动态构造条件：根据搜索表单的值
+        if (params.ip) {
+            conditions.ip = params.ip;
         }
+        if (params.host) {
+            conditions.host = {$regex: params.host, $options: "i"};
+        }
+
+        const requestParams = {
+            page: params.current,
+            pageSize: params.pageSize,
+            condition: conditions,
+        };
+
+        const res = await TerminalIdentification(requestParams);
+        return {
+            data: res.result || [],
+            success: true,
+            total: res.total_count || 0,
+        };
     };
 
     const columns: ProColumns<DataType>[] = [
@@ -63,6 +67,21 @@ const Identification: React.FC = () => {
             dataIndex: "username",
             key: "username",
             width: 150,
+            search: false
+        },
+        {
+            title: "设备类型",
+            dataIndex: "device_type",
+            key: "device_type",
+            width: 150,
+            search: false
+        },
+        {
+            title: "设备名称",
+            dataIndex: "device_name",
+            key: "device_name",
+            width: 150,
+            search: false
         },
         {
             title: "设备",
@@ -76,9 +95,7 @@ const Identification: React.FC = () => {
                         (
                             item: {
                                 icon: string;
-                                brand_name: string;
-                                domain_name: string;
-                                description: string;
+                                brand: string;
                             },
                             index: React.Key
                         ) => (
@@ -94,7 +111,7 @@ const Identification: React.FC = () => {
                                     type={item.icon || "default-icon"}
                                     style={{fontSize: "32px", marginRight: "8px"}}
                                 />
-                                <Tag color="cyan" bordered={false}>{item.brand_name}</Tag>
+                                <Tag color="cyan" bordered={false}>{item.brand}</Tag>
                             </div>
                         )
                     );
@@ -173,6 +190,7 @@ const Identification: React.FC = () => {
             dataIndex: "mac",
             key: "mac",
             width: 150,
+            search: false
         },
         {
             title: "最后更新时间",
@@ -209,20 +227,15 @@ const Identification: React.FC = () => {
     return (
         <ProTable<DataType>
             columns={columns}
-            request={(params) => {
-                const {current, pageSize, sorter} = params;
-                const sortField = sorter?.field as string | undefined;
-                const sortOrder = sorter?.order === "ascend" ? "asc" : "desc";
-                return fetchData({current, pageSize, sortField, sortOrder});
-            }}
+            request={fetchData}
             rowKey="ip"
             pagination={{
                 showSizeChanger: true,
                 defaultPageSize: 20,
             }}
             scroll={{y: 800}}
-            loading={loading}
-            search={false} // 如果不需要搜索栏
+            // loading={loading}
+            // search={false} // 如果不需要搜索栏
         />
     );
 };

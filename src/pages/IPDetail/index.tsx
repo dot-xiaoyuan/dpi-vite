@@ -156,14 +156,22 @@ const IPDetail: React.FC = () => {
         {
             label: 'Device',
             children: (() => {
-                const device = detail?.detail?.device ? JSON.parse(detail?.detail?.device) : [];
-                return device.length > 0 ? (
+                return devices.length > 0 ? (
                     <>
-                        {device.map((item: { icon: string }, index: React.Key) => (
-                            <IconFont key={index} type={item.icon} style={{fontSize: '30px', marginRight: '8px'}}/>
+                        {devices.map((item: DeviceRecord, index: React.Key) => (
+                            item.icon ? ( // 确保 icon 存在才渲染 IconFont
+                                <IconFont
+                                    key={index}
+                                    type={item.icon}
+                                    style={{ fontSize: '30px', marginRight: '8px' }}
+                                />
+                            ) : null // 如果没有 icon，可以选择不渲染或渲染占位符
                         ))}
                     </>
-                ) : <Tag color="green">N/A</Tag>;
+                ) : (
+                    <Tag color="green">N/A</Tag> // 如果 devices 为空，显示占位内容
+                );
+
             })(),
         },
     ];

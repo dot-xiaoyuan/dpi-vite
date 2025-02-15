@@ -3,7 +3,7 @@ import apiClient from "./api.ts";
 export const ChangePass = async (
     old_password: string,
     new_password: string,
-)=> {
+) => {
     const params: Record<string, any> = {
         old_password,
         new_password,
@@ -12,17 +12,11 @@ export const ChangePass = async (
 }
 
 export const TerminalIdentification = async (
-    page = 1,
-    pageSize = 20,
-    sortField?: string | undefined,
-    sortOrder?: string | undefined,
+    p?: { pageSize?: number; page?: number, condition: Record<any, any> },
 ) => {
     const params: Record<string, any> = {
-        page,
-        pageSize
+        ...p,
     };
-    if (sortField) params.sortField = sortField;
-    if (sortOrder) params.sortOrder = sortOrder;
 
     const response = await apiClient.post('/terminal/identification', params);
     return response.data;
@@ -128,13 +122,12 @@ export const UserEventsLog = async (
     return response.data;
 }
 
-export const GetConfig = async (
-) => {
+export const GetConfig = async () => {
     return await apiClient.get("/setting/config");
 }
 
 export const UpdateConfig = async (
-    params:any
+    params: any
 ) => {
     return await apiClient.put("/setting/config", params);
 }
@@ -166,7 +159,7 @@ export const UploadFeature = async (file: any) => {
 }
 
 // 更新特征库
-export const UpdateFeatureLibrary = async (params:any) => {
+export const UpdateFeatureLibrary = async (params: any) => {
     return await apiClient.put("/feature/library", params);
 }
 
