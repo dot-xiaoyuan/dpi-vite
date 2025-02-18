@@ -31,40 +31,55 @@ const ActiveIPList: React.FC = () => {
     // WebSocket连接建立与接收数据
     useEffect(() => {
         // 创建 WebSocket 连接
-        const socket = new WebSocket("ws://localhost:8088/api/ws/active");
-        setSocket(socket);
+        const createSocket = () => {
+            const socket = new WebSocket("ws://localhost:8088/api/ws/active");
+            setSocket(socket);
 
-        socket.onopen = () => {
-            console.log("WebSocket connected");
-            setLoading(false);
-        };
+            socket.onopen = () => {
+                console.log("WebSocket connected");
+                setLoading(false);
+            };
 
-        socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                console.log(data)
-                if (data.result && Array.isArray(data.result)) {
-                    setData(data.result);
+            socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.result && Array.isArray(data.result)) {
+                        setData(data.result);
+                    } else if (data.message === "finished") {
+                        console.log("WebSocket connection closed by server: finished");
+                        socket.close(); // Gracefully close the connection if "finished" is received
+                    }
+                } catch (error) {
+                    console.error("Error parsing WebSocket message", error);
                 }
-            } catch (error) {
-                console.error("Error parsing WebSocket message", error);
-            }
+            };
+
+            socket.onerror = (error) => {
+                console.error("WebSocket Error:", error);
+                message.error("WebSocket 连接失败");
+                setLoading(false);
+            };
+
+            socket.onclose = (event) => {
+                console.log("WebSocket disconnected with code:", event.code);
+                if (event.code !== 1000) {
+                    // Non-1000 codes may indicate an abnormal closure
+                    message.warning("WebSocket 连接已关闭，正在尝试重新连接...");
+                    setLoading(false);
+                    // Try to reconnect after 1 second
+                    setTimeout(() => {
+                        createSocket(); // Reconnect
+                    }, 1000);
+                }
+            };
         };
 
-        socket.onerror = (error) => {
-            console.error("WebSocket Error:", error);
-            message.error("WebSocket 连接失败");
-            setLoading(false);
-        };
-
-        socket.onclose = () => {
-            console.log("WebSocket disconnected");
-            message.warning("WebSocket 连接已关闭");
-            setLoading(false);
-        };
+        createSocket(); // Initial socket connection
 
         return () => {
-            socket.close();
+            if (socket) {
+                socket.close();
+            }
         };
     }, []);
 
@@ -105,24 +120,30 @@ const ActiveIPList: React.FC = () => {
             render: (_, record) => {
                 const devices = record.device ? JSON.parse(record.device) : [];
                 if (devices.length > 0) {
-                    return devices.map((item, index) => (
-                        <div
-                            key={index}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                marginBottom: "8px",
-                            }}
-                        >
-                            <IconFont
-                                type={item.icon || "default-icon"}
-                                style={{fontSize: "32px", marginRight: "8px"}}
-                            />
-                            <Tag color="cyan" bordered={false}>
-                                {item.brand}
-                            </Tag>
-                        </div>
-                    ));
+                    return devices.map(
+                        (
+                            item: {
+                                icon: string;
+                                brand: string;
+                            },
+                            index: React.Key
+                        ) => (
+                            <div
+                                key={index}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    marginBottom: "8px",
+                                }}
+                            >
+                                <IconFont
+                                    type={item.icon || "default-icon"}
+                                    style={{fontSize: "32px", marginRight: "8px"}}
+                                />
+                                <Tag color="cyan" bordered={false}>{item.brand}</Tag>
+                            </div>
+                        )
+                    );
                 }
                 return <Tag bordered={false}></Tag>;
             },
@@ -133,35 +154,31 @@ const ActiveIPList: React.FC = () => {
             dataIndex: "device_count",
             key: "device_count",
             search: false,
-            render: (_, record) => {
-                return (
-                    <>
-                        <Space size={16} wrap>
-                            <Tooltip title="设备总数">
-                                <Badge count={record.all ?? 0}>
-                                    <Tag bordered={false} color="red">
-                                        ALL
-                                    </Tag>
-                                </Badge>
-                            </Tooltip>
-                            <Tooltip title="移动端设备数">
-                                <Badge count={record.mobile ?? 0}>
-                                    <Tag bordered={false} color="cyan">
-                                        Mobile
-                                    </Tag>
-                                </Badge>
-                            </Tooltip>
-                            <Tooltip title="桌面设备数">
-                                <Badge count={record.pc ?? 0}>
-                                    <Tag bordered={false} color="orange">
-                                        PC
-                                    </Tag>
-                                </Badge>
-                            </Tooltip>
-                        </Space>
-                    </>
-                );
-            },
+            render: (_, record) => (
+                <Space size={16} wrap>
+                    <Tooltip title="设备总数">
+                        <Badge count={record.all ?? 0}>
+                            <Tag bordered={false} color="red">
+                                ALL
+                            </Tag>
+                        </Badge>
+                    </Tooltip>
+                    <Tooltip title="移动端设备数">
+                        <Badge count={record.mobile ?? 0}>
+                            <Tag bordered={false} color="cyan">
+                                Mobile
+                            </Tag>
+                        </Badge>
+                    </Tooltip>
+                    <Tooltip title="桌面设备数">
+                        <Badge count={record.pc ?? 0}>
+                            <Tag bordered={false} color="orange">
+                                PC
+                            </Tag>
+                        </Badge>
+                    </Tooltip>
+                </Space>
+            ),
             width: 200,
         },
         {
@@ -172,46 +189,38 @@ const ActiveIPList: React.FC = () => {
             render: (_, record) => {
                 if (record.ttl <= 32) {
                     return (
-                        <>
-                            <Tooltip title="Windows 95/98">
-                                <Tag color="green" bordered={false}>
-                                    {record.ttl}
-                                </Tag>
-                            </Tooltip>
-                        </>
+                        <Tooltip title="Windows 95/98">
+                            <Tag color="green" bordered={false}>
+                                {record.ttl}
+                            </Tag>
+                        </Tooltip>
                     );
                 } else if (record.ttl <= 64) {
                     return (
-                        <>
-                            <Tooltip title="Windows xp/7、Linux、Mac、Android...">
-                                <Tag color="blue" bordered={false}>
-                                    {record.ttl}
-                                </Tag>
-                            </Tooltip>
-                        </>
+                        <Tooltip title="Windows xp/7、Linux、Mac、Android...">
+                            <Tag color="blue" bordered={false}>
+                                {record.ttl}
+                            </Tag>
+                        </Tooltip>
                     );
                 } else if (record.ttl <= 128) {
                     return (
-                        <>
-                            <Tooltip title="Windows NT/2000/8/10/11">
-                                <Tag color="cyan" bordered={false}>
-                                    {record.ttl}
-                                </Tag>
-                            </Tooltip>
-                        </>
+                        <Tooltip title="Windows NT/2000/8/10/11">
+                            <Tag color="cyan" bordered={false}>
+                                {record.ttl}
+                            </Tag>
+                        </Tooltip>
                     );
                 } else if (record.ttl >= 254) {
                     return (
-                        <>
-                            <Tooltip title="UNIX(FreeBSD/Solaris)">
-                                <Tag color="orange" bordered={false}>
-                                    {record.ttl}
-                                </Tag>
-                            </Tooltip>
-                        </>
+                        <Tooltip title="UNIX(FreeBSD/Solaris)">
+                            <Tag color="orange" bordered={false}>
+                                {record.ttl}
+                            </Tag>
+                        </Tooltip>
                     );
                 } else {
-                    return <><Tag/></>;
+                    return <Tag />;
                 }
             },
             width: 150,
@@ -247,7 +256,7 @@ const ActiveIPList: React.FC = () => {
                     to={{
                         pathname: "/terminal/ip-detail",
                     }}
-                    state={{ip: record.ip}}
+                    state={{ ip: record.ip }}
                 >
                     详情
                 </Link>
@@ -264,7 +273,7 @@ const ActiveIPList: React.FC = () => {
                 showSizeChanger: true,
                 defaultPageSize: 20,
             }}
-            scroll={{y: 800}}
+            scroll={{ y: 800 }}
             loading={loading}
         />
     );
