@@ -77,12 +77,8 @@ const ActiveIPList: React.FC = () => {
                 console.log("WebSocket disconnected with code:", event.code);
                 if (event.code !== 1000) {
                     // Non-1000 codes may indicate an abnormal closure
-                    message.warning("WebSocket 连接已关闭，正在尝试重新连接...");
+                    message.warning("WebSocket 连接已关闭");
                     setLoading(false);
-                    // Try to reconnect after 1 second
-                    setTimeout(() => {
-                        createSocket(); // Reconnect
-                    }, 1000);
                 }
             };
         };
