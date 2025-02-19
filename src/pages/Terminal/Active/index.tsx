@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {Badge, message, Space, Tag, Tooltip} from "antd";
+import {Badge,notification, message, Space, Tag, Tooltip} from "antd";
 import {Link} from "react-router-dom";
 import {createFromIconfontCN} from "@ant-design/icons";
+import {baseURLWebsocket} from "../../../services/api.ts";
 
 const IconFont = createFromIconfontCN({
     scriptUrl: "//at.alicdn.com/t/c/font_4731706_z3gdtn2vd7f.js",
 });
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
+
 
 interface DataType {
     ip: string;
@@ -27,12 +30,21 @@ const ActiveIPList: React.FC = () => {
     const [data, setData] = useState<DataType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [api, contextHolder] = notification.useNotification();
+
+    const openNotificationWithIcon = (type: NotificationType) => {
+        api[type]({
+            message: '提示',
+            description:
+                '活跃设备列表已更新',
+        });
+    };
 
     // WebSocket连接建立与接收数据
     useEffect(() => {
         // 创建 WebSocket 连接
         const createSocket = () => {
-            const socket = new WebSocket("ws://localhost:8088/api/ws/active");
+            const socket = new WebSocket(baseURLWebsocket + "/active");
             setSocket(socket);
 
             socket.onopen = () => {
@@ -44,6 +56,7 @@ const ActiveIPList: React.FC = () => {
                 try {
                     const data = JSON.parse(event.data);
                     if (data.result && Array.isArray(data.result)) {
+                        openNotificationWithIcon('success');
                         setData(data.result);
                     } else if (data.message === "finished") {
                         console.log("WebSocket connection closed by server: finished");
@@ -265,6 +278,8 @@ const ActiveIPList: React.FC = () => {
     ];
 
     return (
+        <>
+            {contextHolder}
         <ProTable<DataType>
             columns={columns}
             dataSource={data}
@@ -276,6 +291,7 @@ const ActiveIPList: React.FC = () => {
             scroll={{ y: 800 }}
             loading={loading}
         />
+            </>
     );
 };
 

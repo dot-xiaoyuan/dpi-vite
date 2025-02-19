@@ -3,6 +3,8 @@ import {message} from 'antd';
 import {removeToken} from '../utils/storage';
 
 export const baseURL = '/api'
+export const baseURLWebsocket = '/api/ws';
+
 // 创建 Axios 实例
 const apiClient = axios.create({
     baseURL: baseURL, // 后端接口的基础路径

@@ -10,7 +10,7 @@ import {
     PaperClipOutlined,
     SettingOutlined,
     BarsOutlined,
-    PushpinOutlined
+    PushpinOutlined, PrinterOutlined
 } from '@ant-design/icons';
 import {useAuth} from '../context/AuthContext';
 import logo        from '../assets/srun.svg';
@@ -41,9 +41,21 @@ const MainLayout: React.FC = () => {
                     icon: <PushpinOutlined />,
                 },
                 {
-                    path: '/terminal/identification',
+                    path: '/terminal',
                     name: '终端类型识别',
                     icon: <PushpinOutlined />,
+                    routes: [
+                        {
+                            path: '/terminal/identification',
+                            name: '全部设备',
+                            icon: <PrinterOutlined />,
+                        },
+                        {
+                            path: '/terminal/printer',
+                            name: '打印机',
+                            icon: <PrinterOutlined />,
+                        }
+                    ],
                 },
                 {
                     path: '/terminal/useragent',
