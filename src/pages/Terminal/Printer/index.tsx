@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {message, notification} from "antd";
+import {message, notification, Tag} from "antd";
 import {Link} from "react-router-dom";
 import {baseURLWebsocket} from "../../../services/api.ts";
 
@@ -19,6 +19,7 @@ interface DataType {
     mobile: string | null;
     pc: string | null;
     last_seen: string;
+    active_time: string;
 }
 
 const PrinterIPList: React.FC = () => {
@@ -111,6 +112,26 @@ const PrinterIPList: React.FC = () => {
             dataIndex: "mac",
             key: "mac",
             width: 150,
+            search: false,
+        },
+        {
+            title: "活跃状态",
+            dataIndex: "active_time",
+            key: "active_time",
+            valueType: "dateTime",
+            render: (_, record) => {
+                const timestamp = Number(record.active_time);
+
+                // 如果 timestamp 为 0，返回 "不活跃"
+                if (timestamp === 0) {
+                    return <Tag color="red" bordered={false}>不活跃</Tag>;
+                }
+
+                // 否则格式化时间
+                const date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp);
+                return date.toLocaleString();
+            },
+            width: 200,
             search: false,
         },
         {
