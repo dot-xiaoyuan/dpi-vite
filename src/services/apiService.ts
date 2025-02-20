@@ -70,6 +70,17 @@ export const TerminalDetail = async (
     return response.data;
 }
 
+export const TerminalPrinter = async (
+    p?: { pageSize?: number; page?: number, condition: Record<any, any> },
+) => {
+    const params: Record<string, any> = {
+        ...p,
+    };
+
+    const response = await apiClient.post('/terminal/printer', params);
+    return response.data;
+}
+
 export const JudgeRealtime = async (
     p?: { pageSize?: number; page?: number },
 ) => {

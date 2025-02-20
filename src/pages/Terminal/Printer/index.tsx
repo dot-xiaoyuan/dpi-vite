@@ -1,25 +1,15 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {message, notification, Tag} from "antd";
-import {Link} from "react-router-dom";
-import {baseURLWebsocket} from "../../../services/api.ts";
+import React, { useCallback, useEffect, useState } from "react";
+import { ProColumns, ProTable } from "@ant-design/pro-components";
+import { message, notification, Tag } from "antd";
+import { baseURLWebsocket } from "../../../services/api.ts";
+import { TerminalPrinter } from "../../../services/apiService.ts";
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 interface DataType {
-    ip: string;
-    username: string | null;
-    ttl: number;
-    user_agent: string;
+    last_seen?: string;
     mac: string;
-    device: string | null;
-    device_name: string | null;
-    device_type: string | null;
-    all: string | null;
-    mobile: string | null;
-    pc: string | null;
-    last_seen: string;
-    active_time: string;
+    is_active: boolean;
 }
 
 const PrinterIPList: React.FC = () => {
@@ -28,11 +18,28 @@ const PrinterIPList: React.FC = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [api, contextHolder] = notification.useNotification();
 
-    const openNotificationWithIcon = (type: NotificationType) => {
+    const openNotificationWithIcon = (type: NotificationType, message: string) => {
         api[type]({
             message: '提示',
-            description: '打印机列表已更新',
+            description: message,
         });
+    };
+
+    const fetchData = async (
+        params: Record<string, any>,
+    ): Promise<{ data: DataType[]; success: boolean; total: number }> => {
+        const conditions: Record<string, any> = {};
+        const requestParams = {
+            page: params.current,
+            pageSize: params.pageSize,
+            condition: conditions,
+        };
+        const res = await TerminalPrinter(requestParams);
+        return {
+            data: res.result || [],
+            success: true,
+            total: res.total_count || 0,
+        };
     };
 
     // 创建 WebSocket 连接
@@ -41,16 +48,40 @@ const PrinterIPList: React.FC = () => {
         setSocket(socket);
 
         socket.onopen = () => {
-            console.log("WebSocket connected");
+            // console.log("WebSocket connected");
             setLoading(false);
         };
 
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                if (data.result && Array.isArray(data.result)) {
-                    openNotificationWithIcon('success');
-                    setData(data.result);
+                console.log(data)
+                // 判断事件类型
+                if (data.event === 0 || data.event === 1) {
+                    // 提示活跃或不活跃状态
+                    openNotificationWithIcon(data.event === 0 ? 'success' : 'warning', `打印机 ${data.mac} ${data.event === 0 ? '处于活跃状态' : '不再活跃'}`);
+                    // 处理活跃/不活跃状态
+                    setData((prevData) => {
+                        const newData = new Map(prevData.map(device => [device.mac, device]));
+
+                        console.log(newData);
+                        if (newData.has(data.mac)) {
+                            // 更新现有设备
+                            newData.set(data.mac, {
+                                mac: data.mac,
+                                is_active: data.is_active,
+                            });
+
+                        } else {
+                            // 添加新设备
+                            newData.set(data.mac, {
+                                mac: data.mac,
+                                is_active: data.is_active
+                            });
+                        }
+
+                        return Array.from(newData.values());
+                    });
                 } else if (data.message === "finished") {
                     console.log("WebSocket connection closed by server: finished");
                     socket.close(); // Gracefully close the connection if "finished" is received
@@ -75,38 +106,25 @@ const PrinterIPList: React.FC = () => {
         };
     }, []);
 
+    // 在组件挂载时调用 createSocket
     useEffect(() => {
-        createSocket(); // 初始连接
+        // 获取设备列表
+        fetchData({ current: 1, pageSize: 20 }).then((res)=> {
+            setData(res.data);
+            setLoading(false);
+        })
+        createSocket(); // 创建 WebSocket 连接
 
         return () => {
+            // 在组件卸载时关闭 WebSocket 连接
             if (socket) {
                 socket.close();
             }
         };
-    }, [createSocket]); // 只在 createSocket 变化时重新建立连接
+    }, [createSocket]);
 
     // 处理表格数据
     const columns: ProColumns<DataType>[] = [
-        {
-            title: "IP",
-            dataIndex: "ip",
-            key: "ip",
-            width: 150,
-        },
-        {
-            title: "设备类型",
-            dataIndex: "device_type",
-            key: "device_type",
-            width: 150,
-            search: false,
-        },
-        {
-            title: "设备名称",
-            dataIndex: "device_name",
-            key: "device_name",
-            width: 150,
-            search: false,
-        },
         {
             title: "Mac地址",
             dataIndex: "mac",
@@ -115,27 +133,41 @@ const PrinterIPList: React.FC = () => {
             search: false,
         },
         {
-            title: "活跃状态",
-            dataIndex: "active_time",
-            key: "active_time",
-            valueType: "dateTime",
+            title: "IPv4",
+            dataIndex: "ipv4",
+            key: "ipv4",
+            width: 150,
+        },
+        {
+            title: "IPv6",
+            dataIndex: "ipv6",
+            key: "ipv6",
+            width: 200,
+        },
+        {
+            title: "设备名称",
+            dataIndex: "name",
+            key: "name",
+            width: 150,
+            search: false,
+        },
+        {
+            title: "是否活跃",
+            dataIndex: "is_active",
+            key: "is_active",
             render: (_, record) => {
-                const timestamp = Number(record.active_time);
-
                 // 如果 timestamp 为 0，返回 "不活跃"
-                if (timestamp === 0) {
+                if (!record.is_active) {
                     return <Tag color="red" bordered={false}>不活跃</Tag>;
+                } else {
+                    return <Tag color="cyan" bordered={false}>活跃中</Tag>;
                 }
-
-                // 否则格式化时间
-                const date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp);
-                return date.toLocaleString();
             },
             width: 200,
             search: false,
         },
         {
-            title: "最后更新时间",
+            title: "发现设备时间",
             dataIndex: "last_seen",
             key: "last_seen",
             valueType: "dateTime",
@@ -147,23 +179,6 @@ const PrinterIPList: React.FC = () => {
             width: 200,
             search: false,
         },
-        {
-            title: "操作",
-            key: "operation",
-            fixed: "right",
-            width: 120,
-            search: false,
-            render: (_, record) => (
-                <Link
-                    to={{
-                        pathname: "/terminal/ip-detail",
-                    }}
-                    state={{ ip: record.ip }}
-                >
-                    详情
-                </Link>
-            ),
-        },
     ];
 
     return (
@@ -171,15 +186,17 @@ const PrinterIPList: React.FC = () => {
             {contextHolder}
             <ProTable<DataType>
                 columns={columns}
-                dataSource={data}
-                rowKey="ip"
+                request={fetchData}
+                rowKey="mac"
                 pagination={{
                     showSizeChanger: true,
                     defaultPageSize: 20,
                 }}
                 scroll={{ y: 800 }}
-                loading={loading}
                 search={false}
+                // 使用当前的 data 来渲染表格
+                dataSource={data}
+                loading={loading}
             />
         </>
     );
