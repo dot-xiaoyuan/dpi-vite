@@ -3,17 +3,17 @@ import {ProLayout} from '@ant-design/pro-components';
 import {Outlet, useNavigate} from 'react-router-dom';
 import {Dropdown, Menu} from 'antd';
 import {
+    BarsOutlined,
+    CrownFilled,
     DashboardOutlined,
     DeploymentUnitOutlined,
     LogoutOutlined,
-    CrownFilled,
     PaperClipOutlined,
-    SettingOutlined,
-    BarsOutlined,
-    PushpinOutlined, PrinterOutlined
+    PushpinOutlined,
+    SettingOutlined
 } from '@ant-design/icons';
 import {useAuth} from '../context/AuthContext';
-import logo        from '../assets/srun.svg';
+import logo from '../assets/srun.svg';
 
 const MainLayout: React.FC = () => {
     const navigate = useNavigate();
@@ -36,43 +36,38 @@ const MainLayout: React.FC = () => {
             icon: <DeploymentUnitOutlined/>,
             routes: [
                 {
-                    path: '/terminal/active',
-                    name: '活跃设备观测',
-                    icon: <PushpinOutlined />,
-                },
-                {
-                    path: '/terminal',
+                    path: '/terminal/identification',
                     name: '终端类型识别',
-                    icon: <PushpinOutlined />,
-                    routes: [
-                        {
-                            path: '/terminal/identification',
-                            name: '全部设备',
-                            icon: <PrinterOutlined />,
-                        },
-                        {
-                            path: '/terminal/printer',
-                            name: '打印机',
-                            icon: <PrinterOutlined />,
-                        }
-                    ],
+                    icon: <PushpinOutlined/>,
+                    // routes: [
+                    //     {
+                    //         path: '/terminal/identification',
+                    //         name: '全部设备',
+                    //         icon: <PrinterOutlined />,
+                    //     },
+                    //     {
+                    //         path: '/terminal/printer',
+                    //         name: '打印机',
+                    //         icon: <PrinterOutlined />,
+                    //     }
+                    // ],
                 },
                 {
                     path: '/terminal/useragent',
                     name: 'UA特征识别',
-                    icon: <CrownFilled />,
+                    icon: <CrownFilled/>,
                 },
                 {
                     path: '/terminal/application',
                     name: '应用识别',
-                    icon: <CrownFilled />,
+                    icon: <CrownFilled/>,
                 },
             ],
         },
         {
             path: '/feature-judgment',
             name: '特征判定',
-            icon: <PaperClipOutlined />,
+            icon: <PaperClipOutlined/>,
             routes: [
                 {
                     path: '/feature-judgment/real-time-shared',
@@ -91,7 +86,7 @@ const MainLayout: React.FC = () => {
         {
             path: '/policy-configuration',
             name: '策略配置',
-            icon: <SettingOutlined />,
+            icon: <SettingOutlined/>,
             routes: [
                 {
                     path: '/policy/access',
@@ -108,7 +103,7 @@ const MainLayout: React.FC = () => {
         {
             path: '/log-management',
             name: '日志管理',
-            icon: <BarsOutlined />,
+            icon: <BarsOutlined/>,
             routes: [
                 {
                     path: '/log/users',
@@ -129,7 +124,7 @@ const MainLayout: React.FC = () => {
         {
             path: '/setting',
             name: '系统管理',
-            icon: <SettingOutlined />,
+            icon: <SettingOutlined/>,
             routes: [
                 {
                     path: '/setting/config',
@@ -165,7 +160,7 @@ const MainLayout: React.FC = () => {
             siderWidth={256}
             layout="mix"
             title="DPI Analyze 终端设备识别"
-            logo={ <img alt="" src={ logo }/> }
+            logo={<img alt="" src={logo}/>}
             route={{
                 path: '/',
                 routes: menuItems,
@@ -184,13 +179,13 @@ const MainLayout: React.FC = () => {
             }}
             actionsRender={() => [
                 <Dropdown overlay={userMenu}>
-                    <span style={{ cursor: 'pointer' }}>
+                    <span style={{cursor: 'pointer'}}>
                         {localStorage.getItem('username') || user?.username || 'Guest'}
                     </span>
                 </Dropdown>,
             ]}
         >
-            <Outlet />
+            <Outlet/>
         </ProLayout>
     );
 };

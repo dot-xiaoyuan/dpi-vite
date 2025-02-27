@@ -16,7 +16,6 @@ import ChangePassword from "../pages/Setting/ChangePassword";
 import Authorization from "../pages/Setting/Authorization";
 import FeatureLibrary from "../pages/Judge/FeatureLibrary";
 import ProxyRecord from "../pages/Log/Proxy";
-import ActiveIPList from "../pages/Terminal/Active";
 import PrinterMacList from "../pages/Terminal/Printer";
 
 // 添加404页面（可选）
@@ -34,7 +33,6 @@ const AppRouter = () => {
             <Route element={<MainLayout/>}>
                 <Route path="/" element={<Navigate to="/dashboard" replace/>}/>
                 <Route path="/dashboard" element={<Dashboard/>}/>
-                <Route path="/terminal/active" element={<ActiveIPList/>}/>
                 <Route path="/terminal/printer" element={<PrinterMacList/>}/>
                 <Route path="/terminal/identification" element={<Identification/>}/>
                 <Route path="/terminal/useragent" element={<Useragent/>}/>
