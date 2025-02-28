@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
-import {Badge, Space, Tag, Tooltip} from "antd";
+import {Badge, Input, Select, Space, Tag, Tooltip} from "antd";
 import {TerminalIdentification} from "../../../services/apiService.ts";
 import {Link} from "react-router-dom";
 import {createFromIconfontCN} from "@ant-design/icons";
@@ -26,6 +26,9 @@ interface DataType {
 
 const Identification: React.FC = () => {
     // const [loading, setLoading] = useState(false);
+    const [filterType, setFilterType] = useState("all");
+    const [inputValue, setInputValue] = useState("");
+
 
     const fetchData = async (
         params: Record<string, any>,
@@ -39,6 +42,22 @@ const Identification: React.FC = () => {
         }
         if (params.host) {
             conditions.host = {$regex: params.host, $options: "i"};
+        }
+        // 动态添加筛选条件
+        if (filterType && inputValue) {
+            switch (filterType) {
+                case "all":
+                    conditions.devices_count_all = inputValue;
+                    break;
+                case "pc":
+                    conditions.devices_count_pc = inputValue;
+                    break;
+                case "mobile":
+                    conditions.devices_count_mobile = inputValue;
+                    break;
+                default:
+                    break;
+            }
         }
 
         const requestParams = {
@@ -199,8 +218,10 @@ const Identification: React.FC = () => {
             valueType: "dateTime",
             render: (_, record) => {
                 const timestamp = Number(record.last_seen); // 确保是数字类型
-                const date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp); // 秒级转换为毫秒
-                return date.toLocaleString(); // 根据本地时间格式化时间
+                if (timestamp > 1000) {
+                    const date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp); // 秒级转换为毫秒
+                    return date.toLocaleString(); // 根据本地时间格式化时间
+                }
             },
             width: 200,
             search: false,
@@ -234,6 +255,32 @@ const Identification: React.FC = () => {
                 defaultPageSize: 20,
             }}
             scroll={{y: 800}}
+            toolbar={{
+                search: (
+                    <>
+                        {/* 下拉框用于选择筛选的设备类型 */}
+                        <Select
+                            value={filterType}
+                            onChange={(value) => {
+                                setFilterType(value);
+                                setInputValue(""); // 清空输入框
+                            }}
+                            style={{ width: 120, marginRight: 10 }}
+                        >
+                            <Select.Option value="all">总数</Select.Option>
+                            <Select.Option value="pc">PC</Select.Option>
+                            <Select.Option value="mobile">移动端</Select.Option>
+                        </Select>
+                        {/* 输入框用于输入筛选值 */}
+                        <Input
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            placeholder="输入筛选值"
+                            style={{ width: 150 }}
+                        />
+                    </>
+                ),
+            }}
             // loading={loading}
             // search={false} // 如果不需要搜索栏
         />
