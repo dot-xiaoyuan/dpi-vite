@@ -2,7 +2,7 @@ import axios from 'axios';
 import {message} from 'antd';
 import {removeToken} from '../utils/storage';
 
-export const baseURL = 'http://127.0.0.1:8088/api'
+export const baseURL = '/api'
 export const baseURLWebsocket = '/api/ws';
 
 // 创建 Axios 实例

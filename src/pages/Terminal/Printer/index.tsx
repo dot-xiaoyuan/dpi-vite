@@ -1,7 +1,10 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {ProColumns, ProTable} from "@ant-design/pro-components";
 import {TerminalPrinter} from "../../../services/apiService.ts";
-import {Badge} from "antd";
+import {Badge, message, notification} from "antd";
+import {baseURLWebsocket} from "../../../services/api.ts";
+
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 interface DataType {
     mac: string;
@@ -13,6 +16,16 @@ interface DataType {
 }
 
 const PrinterMacList: React.FC = () => {
+    const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [data, setData] = useState<DataType[]>([]);
+    const [api, contextHolder] = notification.useNotification();
+
+    const openNotificationWithIcon = (type: NotificationType, message: string) => {
+        api[type]({
+            message: '提示',
+            description: message,
+        });
+    };
 
     const fetchData = async (
         params: Record<string, any>,
@@ -28,8 +41,17 @@ const PrinterMacList: React.FC = () => {
 
         const res = await TerminalPrinter(requestParams);
 
+        var mergedData = [];
+        // 合并 WebSocket 数据
+        if (res.result) {
+            mergedData = res.result.map((item: DataType) => {
+                const wsData = data.find((d) => d.mac === item.mac);
+                return wsData ? { ...item, is_active: wsData.is_active } : item;
+            });
+        }
+
         return {
-            data: res.result || [],
+            data: mergedData,
             success: true,
             total: res.total_count || 0,
         };
@@ -38,54 +60,57 @@ const PrinterMacList: React.FC = () => {
     // 组件钩子
     useEffect(() => {
         // 获取设备列表
+        fetchData({ current: 1, pageSize: 20 }).then((res) => {
+            setData(res.data);
+        });
         // 创建websocket
-        // const createSocket = () => {
-        //     const socket = new WebSocket(baseURLWebsocket + "/printer");
-        //     setSocket(socket);
-        //
-        //     socket.onopen = () => {
-        //         console.log("WebSocket connected");
-        //     }
-        //     socket.onmessage = (event) => {
-        //         try {
-        //             const newData = JSON.parse(event.data);
-        //             console.log(newData);
-        //             // 更新或新增设备
-        //             setData((prevData) =>
-        //                 prevData.map((item) =>
-        //                     item.mac === newData.mac ? { ...item, is_active: newData.is_active } : item
-        //                 )
-        //             );
-        //             // 显示通知
-        //             if (newData.event == 0 || newData.event == 1) {
-        //                 openNotificationWithIcon(
-        //                     newData.event === 0 ? 'success' : 'warning',
-        //                     `打印机 ${newData.mac} ${newData.event === 0 ? '处于活跃状态':'不再活跃'}`
-        //                 );
-        //             }
-        //         } catch (error) {
-        //             console.log(error);
-        //         }
-        //     }
-        //     socket.onerror = (error) => {
-        //         console.log(error);
-        //         message.error("WebSocket Error");
-        //     }
-        //     socket.onclose = (event) => {
-        //         console.log("WebSocket disconnected with code:", event.code);
-        //         if (event.code !== 1000) {
-        //             message.warning("WebSocket 连接已关闭");
-        //         }
-        //     };
-        // }
-        //
-        // createSocket();
-        // // 组件卸载时关闭 WebSocket 连接
-        // return () => {
-        //     if (socket) {
-        //         socket.close();
-        //     }
-        // };
+        const createSocket = () => {
+            const socket = new WebSocket(baseURLWebsocket + "/printer");
+            setSocket(socket);
+
+            socket.onopen = () => {
+                console.log("WebSocket connected");
+            }
+            socket.onmessage = (event) => {
+                try {
+                    const newData = JSON.parse(event.data);
+                    console.log(newData);
+                    // 更新或新增设备
+                    setData((prevData: any[]) =>
+                        prevData.map((item) =>
+                            item.mac === newData.mac ? {...item, is_active: newData.is_active} : item
+                        )
+                    );
+                    // 显示通知
+                    if (newData.event == 0 || newData.event == 1) {
+                        openNotificationWithIcon(
+                            newData.event === 0 ? 'success' : 'warning',
+                            `打印机 ${newData.mac} ${newData.event === 0 ? '处于活跃状态' : '不再活跃'}`
+                        );
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            socket.onerror = (error) => {
+                console.log(error);
+                message.error("WebSocket Error");
+            }
+            socket.onclose = (event) => {
+                console.log("WebSocket disconnected with code:", event.code);
+                if (event.code !== 1000) {
+                    message.warning("WebSocket 连接已关闭");
+                }
+            };
+        }
+
+        createSocket();
+        // 组件卸载时关闭 WebSocket 连接
+        return () => {
+            if (socket) {
+                socket.close();
+            }
+        };
     }, []);
     const columns: ProColumns<DataType>[] = [
         {
@@ -139,11 +164,13 @@ const PrinterMacList: React.FC = () => {
 
     return (
         <>
+            {contextHolder}
             <ProTable<DataType>
                 columns={columns}
                 request={fetchData}
                 rowKey="mac"
                 search={false}
+                dataSource={data}
             />
         </>
     );

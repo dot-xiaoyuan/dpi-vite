@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
             <div>
                 <LoginForm
                     logo={<img alt="" src={logo}/>}
-                    title="DPI-Analyze"
+                    title="5G专网终端特征识别系统"
                     subTitle=" "
                     onFinish={handleLogin}
                 >

@@ -52,6 +52,11 @@ const MainLayout: React.FC = () => {
                     //     }
                     // ],
                 },
+                // {
+                //     path: '/terminal/printer',
+                //     name: '打印机识别',
+                //     icon: <PrinterOutlined/>,
+                // },
                 {
                     path: '/terminal/useragent',
                     name: 'UA特征识别',
@@ -159,7 +164,7 @@ const MainLayout: React.FC = () => {
         <ProLayout
             siderWidth={256}
             layout="mix"
-            title="DPI Analyze 终端设备识别"
+            title="5G专网终端特征识别系统"
             logo={<img alt="" src={logo}/>}
             route={{
                 path: '/',
