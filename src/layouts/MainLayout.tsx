@@ -39,24 +39,7 @@ const MainLayout: React.FC = () => {
                     path: '/terminal/identification',
                     name: '终端类型识别',
                     icon: <PushpinOutlined/>,
-                    // routes: [
-                    //     {
-                    //         path: '/terminal/identification',
-                    //         name: '全部设备',
-                    //         icon: <PrinterOutlined />,
-                    //     },
-                    //     {
-                    //         path: '/terminal/printer',
-                    //         name: '打印机',
-                    //         icon: <PrinterOutlined />,
-                    //     }
-                    // ],
                 },
-                // {
-                //     path: '/terminal/printer',
-                //     name: '打印机识别',
-                //     icon: <PrinterOutlined/>,
-                // },
                 {
                     path: '/terminal/useragent',
                     name: 'UA特征识别',
@@ -142,6 +125,14 @@ const MainLayout: React.FC = () => {
                 {
                     path: '/setting/authorization',
                     name: '系统授权',
+                },
+                {
+                    path: '/setting/sms',
+                    name: '短信平台',
+                },
+                {
+                    path: '/setting/interfaces',
+                    name: '北向接口授权',
                 }
             ]
         }

@@ -183,3 +183,13 @@ export const GetLicense = async () => {
 export const UpdateLicense = async (license_code: string) => {
     return await apiClient.put("/license", license_code);
 }
+
+// sso manage data获取
+export const SsoManage = async (
+    p?: { redirect_url: string},
+) => {
+    const params: Record<string, any> = {
+        ...p
+    }
+    return await apiClient.post("/sso-manage", params);
+}
