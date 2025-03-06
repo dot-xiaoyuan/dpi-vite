@@ -17,6 +17,7 @@ import Authorization from "../pages/Setting/Authorization";
 import FeatureLibrary from "../pages/Judge/FeatureLibrary";
 import ProxyRecord from "../pages/Log/Proxy";
 import PrinterMacList from "../pages/Terminal/Printer";
+import PrinterList from "../pages/Discover/Printer";
 
 // 添加404页面（可选）
 // import NotFound from "../pages/NotFound";  // 你可以自己创建这个页面，或使用默认的 "未找到页面"
@@ -47,6 +48,8 @@ const AppRouter = () => {
                 <Route path="/setting/config" element={<ConfigForm/>}/>
                 <Route path="/setting/change-password" element={<ChangePassword/>}/>
                 <Route path="/setting/authorization" element={<Authorization/>}/>
+
+                <Route path="/discover/printer" element={<PrinterList/>}/>
             </Route>
 
             {/* 默认页面，根路径跳转到登录页或仪表板 */}

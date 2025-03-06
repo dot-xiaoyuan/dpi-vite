@@ -3,12 +3,13 @@ import {ProLayout} from '@ant-design/pro-components';
 import {Outlet, useNavigate} from 'react-router-dom';
 import {Dropdown, Menu} from 'antd';
 import {
+    AlertOutlined,
     BarsOutlined,
     CrownFilled,
     DashboardOutlined,
     DeploymentUnitOutlined,
     LogoutOutlined,
-    PaperClipOutlined,
+    PaperClipOutlined, PrinterOutlined,
     PushpinOutlined,
     SettingOutlined
 } from '@ant-design/icons';
@@ -62,6 +63,18 @@ const MainLayout: React.FC = () => {
                     name: '应用识别',
                     icon: <CrownFilled/>,
                 },
+            ],
+        },
+        {
+            path: '/discover',
+            name: '发现设备',
+            icon: <AlertOutlined />,
+            routes: [
+                {
+                    path: '/discover/printer',
+                    name: '打印机',
+                    icon: <PrinterOutlined />,
+                }
             ],
         },
         {
